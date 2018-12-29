@@ -1,0 +1,24 @@
+; Заготовка для сортировки
+
+<input> 5 4 5 6 11 4
+
+; считываем количество
+read 0
+add =10
+store 1 ; конец массива
+; инициализируем счетчик
+load =10
+store 2 ; счетчик
+; считываем данные
+getdata:
+  read *2
+  load 2
+  add =1
+  store 2
+  sub 1
+  jz stop
+  jgtz stop
+  jmp getdata
+stop:
+
+halt

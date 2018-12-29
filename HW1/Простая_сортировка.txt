@@ -1,0 +1,87 @@
+; Алгоритм простой сортировки
+; вход: в первом значении хранится количество элементов массива,
+; в последующих - значения в массиве
+<input> 5 4 5 6 11 4
+
+; считываем количество
+read 0
+add =10 ; (с этой позиции начинаем копировать значения из входного массива)
+store 1 ; конец массива
+; инициализируем счетчик
+load =10 
+store 2 ; счетчик (указатель на регистр, куда будет скопировано очередное входное значение)
+; считываем данные
+getdata:
+  read *2
+  load 2
+  add =1
+  store 2
+  sub 1
+  jz stop
+  jgtz stop
+  jmp getdata
+stop:
+
+; пишем код тут
+load =10
+store 3 ; указатель внешнего цикла (i)
+outer_cycle:  ; внешний цикл итераций по массиву
+  load 3
+  add =1
+  store 4 ; указатель внутреннего цикла (j = i + 1)
+  sub 1
+  jz outer_stop
+  load *3
+  store 5 ; значение массива во внешнем цикле
+  inner_cycle:
+    load *4 
+    store 6 ; значение массива во внутреннем цикле
+    ; если элемент[i] > элемент[j], то
+    ; поменять местами элемент[j] и элемент[i]
+    load 6
+    sub 5 ; arr[j] - arr[i]
+    jz continue   ; если arr[j] - arr[i] > 0, т.е. arr[i] < arr[j],
+    jgtz continue ; то не нужно менять элементы местами, а иначе нужно
+
+    ; элемент_tmp = элемент[j];
+    load 6;
+    store 7 ; в 7 регистре храним tmp-элемент
+    ; элемент[j] = элемент[i];
+    load 5
+    store *4
+    ; элемент[i] = элемент_tmp;
+    load 7
+    store *3
+
+    continue:
+    load 4
+    add =1
+    store 4
+    sub 1
+    jz inner_stop
+    jgtz inner_stop
+    jmp inner_cycle
+  inner_stop:
+  load 3
+  add =1
+  store 3
+  sub 1
+  jz outer_stop
+  jgtz outer_stop
+  jmp outer_cycle
+outer_stop:
+
+load =10
+store 2 ; счетчик
+; выводим данные
+outdata:
+  write *2
+  load 2
+  add =1
+  store 2
+  sub 1
+  jz exit
+  jgtz exit
+  jmp outdata
+exit:
+halt

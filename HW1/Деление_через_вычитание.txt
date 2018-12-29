@@ -1,0 +1,34 @@
+; Алгоритм деления с остатком через вычитание
+
+<input> 27 5
+
+; считываем данные 
+read 1 ; делимое
+read 2 ; делитель
+
+load =0
+store 3 ; result
+
+; пишем код тут
+loop:
+  load 3
+  add =1
+  store 3
+  load 1
+  sub 2
+  store 1
+  jgtz loop
+
+; находим остаток от деления
+jz out
+add 2
+store 1
+load 3
+sub =1
+store 3
+
+; вывод результата
+out:
+  write 3 ; результат деления, 5
+  write 1 ; остаток от деления, 2
+halt
