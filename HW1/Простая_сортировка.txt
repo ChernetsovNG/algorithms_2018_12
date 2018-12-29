@@ -40,7 +40,7 @@ outer_cycle:  ; внешний цикл итераций по массиву
     ; поменять местами элемент[j] и элемент[i]
     load 6
     sub 5 ; arr[j] - arr[i]
-    jz continue   ; если arr[j] - arr[i] > 0, т.е. arr[i] < arr[j],
+    jz continue   ; если arr[j] - arr[i] >= 0, т.е. arr[i] <= arr[j],
     jgtz continue ; то не нужно менять элементы местами, а иначе нужно
 
     ; элемент_tmp = элемент[j];
