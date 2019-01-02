@@ -1,40 +1,55 @@
 package ru.nchernetsov;
 
+/**
+ * Динамический массив
+ *
+ * @param <T> тип элементов
+ */
 public class DArray<T> {
 
-    Object[] _arr;
+    /**
+     * Размер блока, на который увеличивается размер массива
+     */
+    private final int deltaSize;
 
-    DArray() {
+    /**
+     * Массив
+     */
+    private T[] arr;
+
+    @SuppressWarnings("unchecked")
+    public DArray(int initialSize, int deltaSize) {
+        this.arr = (T[]) new Object[initialSize];
+        this.deltaSize = deltaSize;
+    }
+
+    T get(int index) {
+        return arr[index];
     }
 
     @SuppressWarnings("unchecked")
-    T get(int index) {
-        return (T)_arr[index];
-    }
-
-    private void relocate(int newsize, int index) {
-        Object[] tmp = new Object[newsize];
-
-        if (_arr != null)
-            for(int i=0; i < _arr.length; i++)
-                if (i<index)
-                    tmp[i] = _arr[i];
+    private void relocate(int newSize, int index) {
+        Object[] tmp = new Object[newSize];
+        if (arr != null)
+            for (int i = 0; i < arr.length; i++)
+                if (i < index)
+                    tmp[i] = arr[i];
                 else
-                    tmp[i+1] = _arr[i];
-        _arr = tmp;
+                    tmp[i + 1] = arr[i];
+        arr = (T[]) tmp;
     }
 
-    void add(int index, T element) {
-        if (_arr == null || _arr.length <= index)
-            relocate(index+1, index);
-        _arr[index] = (Object)element;
+    public void add(int index, T element) {
+        if (arr == null || arr.length <= index)
+            relocate(index + deltaSize, index);
+        arr[index] = element;
     }
 
-    void set(int index, T element) {
-        _arr[index] = (Object)element;
+    public void set(int index, T element) {
+        arr[index] = element;
     }
 
-    int size( ) {
-        return _arr.length;
+    public int size() {
+        return arr.length;
     }
 }
