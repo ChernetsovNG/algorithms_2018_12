@@ -19,6 +19,20 @@ public class OList<T> {
         return tail;
     }
 
+    /**
+     * Удаляет голову списка и возвращает её
+     *
+     * @return значение из головы списка
+     */
+    T remove() {
+        if (head == null) {
+            return null;
+        }
+        T headItemToReturn = head.getItem();
+        head = head.getNext();
+        return headItemToReturn;
+    }
+
     void add(ListItem<T> item) {
         if (head == null) {
             head = item;
@@ -27,5 +41,14 @@ public class OList<T> {
             tail.setNext(item);
             tail = item;
         }
+    }
+
+    /**
+     * Метод проверяем, если ли в списке не-null элементы
+     *
+     * @return пуст ли список?
+     */
+    boolean isEmpty() {
+        return head == null;
     }
 }

@@ -7,9 +7,13 @@ public class HW2 {
 
         // hw2.bArrayExample();
         // hw2.listExample();
-        hw2.iArray2Example();
+        // hw2.iArray2Example();
+        hw2.pQueueExample();
     }
 
+    /**
+     * Пример на работу с блочным массивом
+     */
     private void bArrayExample() {
         BArray<Integer> a = new BArray<>(5, 5);
 
@@ -20,6 +24,9 @@ public class HW2 {
             System.out.println(a.get(i));
     }
 
+    /**
+     * Пример на работу со списком
+     */
     private void listExample() {
         OList<Integer> list = new OList<>();
         for (int i = 0; i < 10; i++) {
@@ -34,6 +41,9 @@ public class HW2 {
         }
     }
 
+    /**
+     * Пример на работу с массивом массивов (метод get)
+     */
     private void iArray2Example() {
         OList<BArray<Integer>> list = new OList<>();
 
@@ -72,5 +82,47 @@ public class HW2 {
 
         // должно быть равно 10, т.к. отсчёт от нуля
         System.out.println(iArray2.get(9));
+    }
+
+    /**
+     * Пример на работу с очередью с приоритетами
+     */
+    private void pQueueExample() {
+        PQueue<Integer> pQueue = new PQueue<>();
+
+        pQueue.enqueue(1, 2);
+        pQueue.enqueue(1, 4);
+
+        pQueue.enqueue(2, 3);
+        pQueue.enqueue(2, 5);
+
+        pQueue.enqueue(3, 4);
+        pQueue.enqueue(3, 5);
+
+        pQueue.enqueue(5, 1);
+        pQueue.enqueue(5, 3);
+        pQueue.enqueue(5, 4);
+
+        // Извлекаем элементы в порядке приоритета
+        System.out.println(pQueue.dequeue());  // 1
+        System.out.println(pQueue.dequeue());  // 3
+        System.out.println(pQueue.dequeue());  // 4
+
+        System.out.println(pQueue.dequeue());  // 4
+        System.out.println(pQueue.dequeue());  // 5
+
+        System.out.println(pQueue.dequeue());  // 3
+        System.out.println(pQueue.dequeue());  // 5
+
+        System.out.println(pQueue.dequeue());  // 2
+        System.out.println(pQueue.dequeue());  // 4
+
+        System.out.println(pQueue.dequeue());  // null, очередь пуста
+
+        // добавим ещё один элемент
+        pQueue.enqueue(1, 7);
+
+        System.out.println(pQueue.dequeue());  // 7
+        System.out.println(pQueue.dequeue());  // null
     }
 }
