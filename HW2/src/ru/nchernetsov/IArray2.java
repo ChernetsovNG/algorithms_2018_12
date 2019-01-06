@@ -20,7 +20,7 @@ public class IArray2<T> {
     }
 
     // for testing
-    public IArray2(OList<BArray<T>> list) {
+    IArray2(OList<BArray<T>> list) {
         this.list = list;
     }
 
@@ -30,20 +30,18 @@ public class IArray2<T> {
      * @param index индекс
      * @return элемент
      */
-    public T get(int index) {
+    T get(int index) {
         // Идём по списку и проверяем заполненность массивов
-        int prevRowCount = 0;
-        int elementsCount = 0;
+        int prevRowsElementsCount = 0;  // количество элементов в предыдущих N-1 строках
         ListItem<BArray<T>> head = list.head();
         while (head != null) {
             BArray<T> item = head.getItem();
-            int occupancy = item.occupancy();
-            elementsCount += occupancy;
-            if (index < elementsCount) {
-                return item.get(index - prevRowCount);
+            int occupancy = item.size();
+            if (index - prevRowsElementsCount < occupancy) {
+                return item.get(index - prevRowsElementsCount);
             }
             head = head.getNext();
-            prevRowCount = occupancy;
+            prevRowsElementsCount += occupancy;
         }
         throw new NoSuchElementException();
     }

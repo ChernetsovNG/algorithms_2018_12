@@ -17,6 +17,8 @@ public class BArray<T> {
      */
     private T[] arr;
 
+    private int size;
+
     public BArray() {
         this(10, 5);
     }
@@ -25,6 +27,7 @@ public class BArray<T> {
     BArray(int initialSize, int blockSize) {
         this.arr = (T[]) new Object[initialSize];
         this.blockSize = blockSize;
+        this.size = 0;
     }
 
     T get(int index) {
@@ -32,9 +35,14 @@ public class BArray<T> {
     }
 
     void add(int index, T element) {
-        if (arr == null || arr.length <= index)
-            relocate(index + blockSize, index);
+        if (arr == null) {
+            relocate(blockSize, index);
+        }
+        if (index >= arr.length) {
+            relocate(arr.length + blockSize, index);
+        }
         arr[index] = element;
+        size++;
     }
 
     public void set(int index, T element) {
@@ -42,43 +50,30 @@ public class BArray<T> {
     }
 
     public void remove(int index) {
-        if (index >= arr.length) {
+        if (index >= size) {
             throw new ArrayIndexOutOfBoundsException();
         }
         // сдвигаем все элементы справа на место удаляемого
         for (int i = index; i < arr.length - 1; i++) {
             arr[i] = arr[i + 1];
         }
+        size--;
     }
 
     int size() {
-        return arr.length;
-    }
-
-    /**
-     * Получить реальную "заполненность" массива
-     *
-     * @return сколько всего занято элементов в массиве
-     */
-    int occupancy() {
-        int result = 0;
-        for (T t : arr) {
-            if (t != null) {
-                result++;
-            }
-        }
-        return result;
+        return size;
     }
 
     @SuppressWarnings("unchecked")
     private void relocate(int newSize, int index) {
         Object[] tmp = new Object[newSize];
-        if (arr != null)
+        if (arr != null) {
             for (int i = 0; i < arr.length; i++)
                 if (i < index)
                     tmp[i] = arr[i];
                 else
                     tmp[i + 1] = arr[i];
+        }
         arr = (T[]) tmp;
     }
 }

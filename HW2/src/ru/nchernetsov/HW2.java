@@ -7,8 +7,8 @@ public class HW2 {
 
         // hw2.bArrayExample();
         // hw2.listExample();
-        // hw2.iArray2Example();
-        hw2.pQueueExample();
+        hw2.iArray2Example();
+        // hw2.pQueueExample();
     }
 
     /**
@@ -22,6 +22,8 @@ public class HW2 {
 
         for (int i = 0; i < 10; i++)
             System.out.println(a.get(i));
+
+        System.out.println("The end");
     }
 
     /**
@@ -80,8 +82,9 @@ public class HW2 {
 
         IArray2<Integer> iArray2 = new IArray2<>(list);
 
-        // должно быть равно 10, т.к. отсчёт от нуля
-        System.out.println(iArray2.get(9));
+        System.out.println(iArray2.get(3));   // == 4 (элемент из 1-го блока)
+        System.out.println(iArray2.get(9));   // должно быть равно 10, т.к. отсчёт от нуля (элемент из 2-го блока)
+        System.out.println(iArray2.get(14));  // == 15 (элемент из 3-го блока)
     }
 
     /**
