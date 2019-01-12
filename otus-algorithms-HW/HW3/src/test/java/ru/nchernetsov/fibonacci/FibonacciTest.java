@@ -1,11 +1,12 @@
-package ru.nchernetsov.HW3.fibonacci;
+package ru.nchernetsov.fibonacci;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.nchernetsov.HW3.fibonacci.Fibonacci.getFibonacciByMatrixCalc;
+import static ru.nchernetsov.fibonacci.Fibonacci.getFibonacciByMatrixCalc;
 
 /**
  * Для проверки используется последовательность Фибоначчи: https://oeis.org/A000045/b000045.txt

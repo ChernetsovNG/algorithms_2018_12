@@ -1,8 +1,8 @@
-package ru.nchernetsov.HW3.fibonacci;
+package ru.nchernetsov.fibonacci;
 
 import java.math.BigInteger;
 
-import static ru.nchernetsov.HW3.fibonacci.Power.matrixPower;
+import static ru.nchernetsov.fibonacci.Power.matrixPower;
 
 public class Fibonacci {
 

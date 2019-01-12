@@ -1,4 +1,4 @@
-package ru.nchernetsov.HW3.fibonacci;
+package ru.nchernetsov.fibonacci;
 
 import lombok.Data;
 

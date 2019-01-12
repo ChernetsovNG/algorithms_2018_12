@@ -1,12 +1,12 @@
-package ru.nchernetsov.HW3.fibonacci;
+package ru.nchernetsov.fibonacci;
 
 import org.junit.Test;
 
 import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.nchernetsov.HW3.fibonacci.Power.matrixPower;
-import static ru.nchernetsov.HW3.fibonacci.Power.power;
+import static ru.nchernetsov.fibonacci.Power.matrixPower;
+import static ru.nchernetsov.fibonacci.Power.power;
 
 public class PowerTest {
 

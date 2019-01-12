@@ -1,11 +1,11 @@
-package ru.nchernetsov.HW3.fibonacci;
+package ru.nchernetsov.fibonacci;
 
 import org.junit.Test;
 
 import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.nchernetsov.HW3.fibonacci.SquareMatrix.multiplyMatrices;
+import static ru.nchernetsov.fibonacci.SquareMatrix.multiplyMatrices;
 
 public class SquareMatrixTest {
 
