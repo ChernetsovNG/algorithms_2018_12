@@ -94,8 +94,6 @@ public class EratosthenesSieve {
         return primes[x / 64] & (1 << ((x >> 1) & 31));
     }
 
-    // Marks x composite in prime[]
-
     /**
      * Помечает число x как составное в массиве primes
      *
@@ -103,10 +101,6 @@ public class EratosthenesSieve {
      * @param x      число
      */
     private static void makeComposite(int[] primes, int x) {
-        // Set a bit corresponding to given element.
-        // Using prime[x/64], we find the slot
-        // in prime array. To find the bit number,
-        // we divide x by 2 and take its mod with 32.
         primes[x / 64] |= (1 << ((x >> 1) & 31));
     }
 }
