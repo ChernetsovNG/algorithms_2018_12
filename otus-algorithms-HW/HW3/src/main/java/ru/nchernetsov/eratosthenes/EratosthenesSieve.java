@@ -48,8 +48,6 @@ public class EratosthenesSieve {
      * @param n верхняя граница диапазона определения простых числе
      * @return список найденных простых чисел, меньших заданного n
      */
-
-    // Prints all prime numbers smaller than n.
     public static List<Integer> getPrimeNumbersBitwise(int n) {
 
         // в типе int Java содержится 32 бита. за счёт чего можно уменьшить требуемый для вычислений объём памяти
