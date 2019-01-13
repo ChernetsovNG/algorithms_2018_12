@@ -12,7 +12,7 @@ public class EratosthenesSieve {
      * Алгоритм нахождения простых чисел до заданного числа n
      *
      * @param n верхняя граница диапазона определения простых числе
-     * @return список найденных простых чисел
+     * @return список найденных простых чисел меньших заданного n
      */
     public static List<Integer> getPrimeNumbersSimple(int n) {
 
@@ -46,74 +46,67 @@ public class EratosthenesSieve {
      * Алгоритм нахождения простых чисел до заданного числа n с использованием побитовых операций для оптимизации
      *
      * @param n верхняя граница диапазона определения простых числе
-     * @return список найденных простых чисел
+     * @return список найденных простых чисел, меньших заданного n
      */
+
+    // Prints all prime numbers smaller than n.
     public static List<Integer> getPrimeNumbersBitwise(int n) {
 
-        return null;
+        // в типе int Java содержится 32 бита. за счёт чего можно уменьшить требуемый для вычислений объём памяти
+        int[] primes = new int[n / 64 + 1];
+
+        // 2 - это единственноё чётное простое число, поэтому цикл можно начать с 3
+        for (int i = 3; i * i <= n; i += 2) {
+            // если i - простое число, то помечаем все кратные ему числа как составные
+            if (ifNotPrime(primes, i) == 0) {
+                // j = i^2, k = i*2
+                for (int j = i * i, k = i << 1; j < n; j += k)
+                    makeComposite(primes, j);
+            }
+        }
+
+        List<Integer> result = new ArrayList<>();
+        result.add(2);
+
+        // Добавляем простые числа в список результатов
+        for (int i = 3; i <= n; i += 2) {
+            if (ifNotPrime(primes, i) == 0) {
+                result.add(i);
+            }
+        }
+
+        return result;
     }
-}
 
-
-
-/*
-
-// Checks whether x is prime or composite
-    static int ifnotPrime(int prime[], int x)
-    {
-        // checking whether the value of element
-        // is set or not. Using prime[x/64],
-        // we find the slot in prime array.
-        // To find the bit number, we divide x
-        // by 2 and take its mod with 32.
-        return (prime[x/64] & (1 << ((x >> 1) & 31)));
+    /**
+     * проверка, является ли заданное число x простым или составным
+     *
+     * @param primes массив простых чисел
+     * @param x      проверяемое число
+     * @return значение бита в массиве primes[x / 64] в позиции x / 2:
+     * 0 - если x - простое, 1 - если x - составное
+     */
+    private static int ifNotPrime(int[] primes, int x) {
+        // x >> 1 - делим пополам
+        // (x >> 1) & 31 - ограничиваем число первыми 5-ю битами справа
+        // 1 << ((x >> 1) & 31) - сдвигаем 1-й бит справа на x/2 позиций влево
+        // primes[x / 64] & (1 << ((x >> 1) & 31)) - находим в массиве primes бит, находящийся в позиции x/2
+        return primes[x / 64] & (1 << ((x >> 1) & 31));
     }
 
     // Marks x composite in prime[]
-    static void makeComposite(int prime[], int x)
-    {
+
+    /**
+     * Помечает число x как составное в массиве primes
+     *
+     * @param primes массив
+     * @param x      число
+     */
+    private static void makeComposite(int[] primes, int x) {
         // Set a bit corresponding to given element.
         // Using prime[x/64], we find the slot
         // in prime array. To find the bit number,
         // we divide x by 2 and take its mod with 32.
-        prime[x/64] |= (1 << ((x >> 1) & 31));
+        primes[x / 64] |= (1 << ((x >> 1) & 31));
     }
-
-    // Prints all prime numbers smaller than n.
-    static void bitWiseSieve(int n)
-    {
-        // Assuming that n takes 32 bits,
-        // we reduce size to n/64 from n/2.
-        int prime[] = new int[n/64 + 1];
-
-
-        // 2 is the only even prime so we
-        // can ignore that loop starts from
-        // 3 as we have used in sieve of
-        // Eratosthenes .
-        for (int i = 3; i * i <= n; i += 2) {
-
-            // If i is prime, mark all its
-            // multiples as composite
-            if (ifnotPrime(prime, i)==0)
-                for (int j = i * i, k = i << 1;
-                                  j < n; j += k)
-                    makeComposite(prime, j);
-        }
-
-        // writing 2 separately
-        System.out.printf("2 ");
-
-        // Printing other primes
-        for (int i = 3; i <= n; i += 2)
-            if (ifnotPrime(prime, i) == 0)
-                System.out.printf("%d ", i);
-    }
-
-public static void main(String[] args)
-{
-    int n = 30;
-    bitWiseSieve(n);
 }
-
- */
