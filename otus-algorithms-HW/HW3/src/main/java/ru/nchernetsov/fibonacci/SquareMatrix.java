@@ -1,13 +1,11 @@
 package ru.nchernetsov.fibonacci;
 
-import lombok.Data;
-
 import java.math.BigInteger;
+import java.util.Objects;
 
 /**
  * Квадратная матрица 2 х 2
  */
-@Data
 public class SquareMatrix {
 
     private final BigInteger a11;
@@ -51,4 +49,43 @@ public class SquareMatrix {
      * Матрица Q из матричного алгоритма вычисления чисел Фибоначчи (которая возводится в степень)
      */
     public static final SquareMatrix Q = new SquareMatrix(BigInteger.ONE, BigInteger.ONE, BigInteger.ONE, BigInteger.ZERO);
+
+    public SquareMatrix(BigInteger a11, BigInteger a12, BigInteger a21, BigInteger a22) {
+        this.a11 = a11;
+        this.a12 = a12;
+        this.a21 = a21;
+        this.a22 = a22;
+    }
+
+    public BigInteger getA11() {
+        return a11;
+    }
+
+    public BigInteger getA12() {
+        return a12;
+    }
+
+    public BigInteger getA21() {
+        return a21;
+    }
+
+    public BigInteger getA22() {
+        return a22;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SquareMatrix that = (SquareMatrix) o;
+        return Objects.equals(a11, that.a11) &&
+                Objects.equals(a12, that.a12) &&
+                Objects.equals(a21, that.a21) &&
+                Objects.equals(a22, that.a22);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(a11, a12, a21, a22);
+    }
 }
