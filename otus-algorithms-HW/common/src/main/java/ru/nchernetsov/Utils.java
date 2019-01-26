@@ -8,7 +8,7 @@ public class Utils {
      * @param array массив
      * @return true - если массив отсортирован, false - если не отсортирован
      */
-    public static boolean arrayIsSorted(int[] array) {
+    public static boolean isArraySorted(int[] array) {
 
         for (int i = 1; i < array.length; i++) {
             if (array[i] < array[i - 1]) {

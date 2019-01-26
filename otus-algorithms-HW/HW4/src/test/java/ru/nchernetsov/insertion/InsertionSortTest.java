@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.nchernetsov.SortSpeedTest.createRandomIntArray;
-import static ru.nchernetsov.Utils.arrayIsSorted;
+import static ru.nchernetsov.Utils.isArraySorted;
 import static ru.nchernetsov.insertion.InsertionSort.insertionSort;
 
 public class InsertionSortTest {
@@ -15,6 +15,6 @@ public class InsertionSortTest {
 
         insertionSort(array);
 
-        assertThat(arrayIsSorted(array)).isTrue();
+        assertThat(isArraySorted(array)).isTrue();
     }
 }

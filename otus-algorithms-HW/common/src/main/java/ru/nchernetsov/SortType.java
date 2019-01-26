@@ -4,5 +4,7 @@ public enum SortType {
 
     INSERTION,
 
-    SHELL
+    SHELL,
+
+    HEAP
 }
