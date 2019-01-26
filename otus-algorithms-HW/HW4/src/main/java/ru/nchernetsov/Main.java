@@ -6,6 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         sortComparison(SortType.INSERTION);
+        sortComparison(SortType.SHELL);
     }
 
     private static void sortComparison(SortType sortType) {
@@ -16,6 +17,7 @@ public class Main {
 
         double minTime = 1;
 
+        System.out.println("Sort arrays by " + sortType + " sort");
         for (int i = 0; i < lengths.length; i++) {
             int length = lengths[i];
             double sortTime = getSortTimeOfRandomArrayMs(length, -1000, 1000, sortType);

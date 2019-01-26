@@ -3,6 +3,7 @@ package ru.nchernetsov;
 import java.util.Random;
 
 import static ru.nchernetsov.insertion.InsertionSort.insertionSort;
+import static ru.nchernetsov.shell.ShellSort.shellSort;
 
 /**
  * Тестируем скорость сортировки массива
@@ -28,6 +29,7 @@ public class SortSpeedTest {
                 insertionSort(array);
                 break;
             case SHELL:
+                shellSort(array);
                 break;
         }
 
