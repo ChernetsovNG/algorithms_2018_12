@@ -1,5 +1,7 @@
 package ru.nchernetsov;
 
+import java.util.Random;
+
 public class Utils {
 
     /**
@@ -17,5 +19,17 @@ public class Utils {
         }
 
         return true;
+    }
+
+    public static int[] createRandomIntArray(int length, int from, int to) {
+        int[] array = new int[length];
+
+        Random random = new Random();
+
+        for (int i = 0; i < length; i++) {
+            array[i] = random.nextInt(to + 1 - from) + from;
+        }
+
+        return array;
     }
 }
