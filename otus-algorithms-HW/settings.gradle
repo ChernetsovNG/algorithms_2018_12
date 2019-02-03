@@ -3,4 +3,5 @@ include 'HW3'
 include 'HW4'
 include 'HW5'
 include 'common'
+include 'HW6'
 
