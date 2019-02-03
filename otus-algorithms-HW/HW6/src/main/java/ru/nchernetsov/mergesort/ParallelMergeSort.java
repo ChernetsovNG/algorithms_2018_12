@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 class ParallelMergeSort {
 
+    private static final boolean PRINT_THREADS = false;
+
     static void sort(long[] array, int nThreads) {
         sort(array, 0, array.length, nThreads);
     }
@@ -85,6 +87,10 @@ class ParallelMergeSort {
         private final int rangeLength;
 
         SorterThread(int threads, long[] source, long[] target, int sourceOffset, int targetOffset, int rangeLength) {
+            if (PRINT_THREADS) {
+                System.out.printf("Create new SorterThread in thread: %s. sourceOffset = %d, targetOffset = %d, rangeLength = %d\n",
+                    Thread.currentThread().getName(), sourceOffset, targetOffset, rangeLength);
+            }
             this.threads = threads;
             this.source = source;
             this.target = target;
@@ -95,7 +101,15 @@ class ParallelMergeSort {
 
         @Override
         public void run() {
+            if (PRINT_THREADS) {
+                System.out.printf("run SorterThread: %s\n", Thread.currentThread().getName());
+            }
+
             if (threads < 2) {
+                if (PRINT_THREADS) {
+                    System.out.printf("run BottomUpMergeSort in thread: %s. sourceOffset = %d, targetOffset = %d, rangeLength = %d\n",
+                        Thread.currentThread().getName(), sourceOffset, targetOffset, rangeLength);
+                }
                 BottomUpMergeSort.sort(target, targetOffset, targetOffset + rangeLength);
                 return;
             }

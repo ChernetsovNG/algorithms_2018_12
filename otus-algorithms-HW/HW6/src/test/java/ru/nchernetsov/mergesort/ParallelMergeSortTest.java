@@ -17,4 +17,13 @@ public class ParallelMergeSortTest {
 
         assertThat(isArraySorted(array)).isTrue();
     }
+
+    @Test
+    public void sortTest2() {
+        long[] array = createRandomLongArray(1000, -100, 100);
+
+        ParallelMergeSort.sort(array, 8);
+
+        assertThat(isArraySorted(array)).isTrue();
+    }
 }
