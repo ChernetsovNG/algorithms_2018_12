@@ -1,6 +1,8 @@
 package ru.nchernetsov;
 
-import static ru.nchernetsov.Utils.createRandomIntArray;
+import ru.nchernetsov.sort.SortType;
+
+import static ru.nchernetsov.sort.Utils.createRandomIntArray;
 import static ru.nchernetsov.insertion.InsertionSort.insertionSort;
 import static ru.nchernetsov.shell.ShellSort.shellSort;
 

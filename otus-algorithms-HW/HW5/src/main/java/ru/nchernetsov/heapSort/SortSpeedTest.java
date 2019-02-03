@@ -1,8 +1,8 @@
 package ru.nchernetsov.heapSort;
 
-import ru.nchernetsov.SortType;
+import ru.nchernetsov.sort.SortType;
 
-import static ru.nchernetsov.Utils.createRandomIntArray;
+import static ru.nchernetsov.sort.Utils.createRandomIntArray;
 import static ru.nchernetsov.heapSort.HeapSort.heapSort;
 
 /**

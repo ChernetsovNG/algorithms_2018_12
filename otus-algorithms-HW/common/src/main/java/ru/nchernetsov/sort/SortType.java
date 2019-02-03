@@ -1,4 +1,4 @@
-package ru.nchernetsov;
+package ru.nchernetsov.sort;
 
 public enum SortType {
 

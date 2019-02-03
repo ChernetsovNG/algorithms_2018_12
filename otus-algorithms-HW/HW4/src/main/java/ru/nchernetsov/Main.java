@@ -1,5 +1,7 @@
 package ru.nchernetsov;
 
+import ru.nchernetsov.sort.SortType;
+
 import static ru.nchernetsov.SortSpeedTest.getSortTimeOfRandomArrayMs;
 
 public class Main {

@@ -1,8 +1,9 @@
-package ru.otus;
+package ru.nchernetsov.mergesort;
 
 import java.util.Arrays;
 
 class ParallelMergeSort {
+
     static void sort(long[] array, int nThreads) {
         sort(array, 0, array.length, nThreads);
     }
@@ -18,13 +19,14 @@ class ParallelMergeSort {
         }
 
         // разбиваем массив на левую и правую часть
-        int leftPartLength  = rangeLength/2;
+        int leftPartLength = rangeLength / 2;
         int rightPartLength = rangeLength - leftPartLength;
+
         // копия входного массива
         long[] aux = Arrays.copyOfRange(array, fromIndex, toIndex);
 
         // делим потоки пополам
-        int nThreads1 = threads/2;
+        int nThreads1 = threads / 2;
         int nThreads2 = threads - nThreads1;
 
         // сортируем левую половину массива
@@ -40,8 +42,7 @@ class ParallelMergeSort {
         try {
             thread1.join();
         } catch (InterruptedException ex) {
-            throw new IllegalStateException(
-                "A SorterThread threw an IllegalStateException.");
+            throw new IllegalStateException("A SorterThread threw an IllegalStateException.");
         }
 
         // сливаем отсортированные массивы
@@ -83,8 +84,7 @@ class ParallelMergeSort {
         private final int targetOffset;
         private final int rangeLength;
 
-        SorterThread(int threads, long[] source, long[] target,
-                     int sourceOffset, int targetOffset, int rangeLength) {
+        SorterThread(int threads, long[] source, long[] target, int sourceOffset, int targetOffset, int rangeLength) {
             this.threads = threads;
             this.source = source;
             this.target = target;
@@ -100,14 +100,14 @@ class ParallelMergeSort {
                 return;
             }
 
-            int leftPartLength = rangeLength/2;
+            int leftPartLength = rangeLength / 2;
 
-            SorterThread thread1 = new SorterThread(threads/2, target, source,
+            SorterThread thread1 = new SorterThread(threads / 2, target, source,
                 targetOffset, sourceOffset, leftPartLength);
 
             thread1.start();
 
-            SorterThread thread2 = new SorterThread(threads - threads/2, target, source,
+            SorterThread thread2 = new SorterThread(threads - threads / 2, target, source,
                 targetOffset + leftPartLength,
                 sourceOffset + leftPartLength,
                 rangeLength - leftPartLength);
@@ -117,8 +117,7 @@ class ParallelMergeSort {
             try {
                 thread1.join();
             } catch (InterruptedException ex) {
-                throw new IllegalStateException(
-                    "A SorterThread threw InterruptedException.");
+                throw new IllegalStateException("A SorterThread threw InterruptedException.");
             }
 
             merge(source, target, sourceOffset, targetOffset, leftPartLength, rangeLength - leftPartLength);

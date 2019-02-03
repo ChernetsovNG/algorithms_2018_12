@@ -1,10 +1,10 @@
-package ru.otus;
+package ru.nchernetsov.mergesort;
 
 import java.util.Arrays;
 
 class BottomUpMergeSort {
 
-    private static final int INSERTIONSORT_THRESHOLD = 4;  // порог, после которого применяем сортировку вставками
+    private static final int INSERTION_SORT_THRESHOLD = 4;  // порог, после которого применяем сортировку вставками
 
     private final long[] array;   // Массив, содержащий элементы для сортировки
     private final long[] buffer;  // Вспомогательный массив для слияния
@@ -54,14 +54,14 @@ class BottomUpMergeSort {
             this.targetOffset = fromIndex;
         }
 
-        // Сортируем входной массив на отсортированные блоки, каждый длиной insertionsortThreshold
+        // Сортируем входной массив на отсортированные блоки, каждый длиной insertionSortThreshold
         // Последний блок может быть короче
         presortRuns(insertionSortBlocksAmount);
 
         // Отсортированные вставками блоки готовы для слияния
-        for (int runLength = INSERTIONSORT_THRESHOLD; runLength < rangeLength; runLength *= 2) {
+        for (int runLength = INSERTION_SORT_THRESHOLD; runLength < rangeLength; runLength *= 2) {
             mergePass(insertionSortBlocksAmount, runLength);
-            insertionSortBlocksAmount = (insertionSortBlocksAmount/2) + ((insertionSortBlocksAmount & 1) != 0 ? 1 : 0);
+            insertionSortBlocksAmount = (insertionSortBlocksAmount / 2) + ((insertionSortBlocksAmount & 1) != 0 ? 1 : 0);
             // Делаем входной массив целевым и наоборот
             swapArrayRoles();
         }
@@ -69,9 +69,9 @@ class BottomUpMergeSort {
 
     private void swapArrayRoles() {
         // Swap the array roles
-        long[] tmparr = source;
+        long[] tmpArr = source;
         source = target;
-        target = tmparr;
+        target = tmpArr;
 
         // Swap the array offsets
         int tmpOffset = sourceOffset;
@@ -81,7 +81,7 @@ class BottomUpMergeSort {
 
     // Вычисляет количество прогонов в запрошенном диапазоне, которые должны сортироваться с помощью сортировки вставками
     private int computeInsertionSortBlocksAmount() {
-        return (rangeLength/INSERTIONSORT_THRESHOLD) + (rangeLength % INSERTIONSORT_THRESHOLD != 0 ? 1 : 0);
+        return (rangeLength / INSERTION_SORT_THRESHOLD) + (rangeLength % INSERTION_SORT_THRESHOLD != 0 ? 1 : 0);
     }
 
     // Computes the amount of merging passes needed to be performed in order to
@@ -95,11 +95,11 @@ class BottomUpMergeSort {
 
         // Сортируем вставками все блоки входного массива, кроме последнего
         for (int i = 0; i < runs - 1; ++i) {
-            insertionSort(source, localFromIndex, localFromIndex += INSERTIONSORT_THRESHOLD);
+            insertionSort(source, localFromIndex, localFromIndex += INSERTION_SORT_THRESHOLD);
         }
 
-        // Сортируем последний блок (он может быть короче insertionsortThreshold)
-        insertionSort(source, localFromIndex, Math.min(sourceOffset + rangeLength, localFromIndex + INSERTIONSORT_THRESHOLD));
+        // Сортируем последний блок (он может быть короче insertionSortThreshold)
+        insertionSort(source, localFromIndex, Math.min(sourceOffset + rangeLength, localFromIndex + INSERTION_SORT_THRESHOLD));
     }
 
     private void mergePass(int sortedBlocksAmount, int runLength) {
@@ -107,18 +107,18 @@ class BottomUpMergeSort {
 
         for (; runIndex < sortedBlocksAmount - 1; runIndex += 2) {
             // Set up the indices.
-            int leftIndex = sourceOffset + runIndex*runLength;
+            int leftIndex = sourceOffset + runIndex * runLength;
             int leftBound = leftIndex + runLength;
             int rightBound = Math.min(leftBound + runLength, rangeLength + sourceOffset);
-            int targetIndex = targetOffset + runIndex*runLength;
+            int targetIndex = targetOffset + runIndex * runLength;
 
             // Выполняем слияние
             merge(leftIndex, leftBound, rightBound, targetIndex);
         }
 
         if (runIndex < sortedBlocksAmount) {
-            System.arraycopy(source, sourceOffset + runIndex*runLength, target,
-                targetOffset + runIndex*runLength, rangeLength - runIndex*runLength);
+            System.arraycopy(source, sourceOffset + runIndex * runLength, target,
+                targetOffset + runIndex * runLength, rangeLength - runIndex * runLength);
         }
     }
 

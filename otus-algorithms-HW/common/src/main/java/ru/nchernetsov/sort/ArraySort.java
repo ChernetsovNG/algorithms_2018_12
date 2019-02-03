@@ -1,7 +1,7 @@
-package ru.otus;
+package ru.nchernetsov.sort;
 
-// сортировка элементов массива по возрастанию
 abstract class ArraySort {
+
     int nElems;
     long[] theArray;  // сортируемый массив
 
