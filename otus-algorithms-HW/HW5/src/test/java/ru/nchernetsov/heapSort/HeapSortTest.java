@@ -1,19 +1,19 @@
-package ru.nchernetsov.insertion;
+package ru.nchernetsov.heapSort;
 
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.nchernetsov.Utils.createRandomIntArray;
 import static ru.nchernetsov.Utils.isArraySorted;
-import static ru.nchernetsov.insertion.InsertionSort.insertionSort;
+import static ru.nchernetsov.heapSort.HeapSort.heapSort;
 
-public class InsertionSortTest {
+public class HeapSortTest {
 
     @Test
-    public void insertionSortTest1() {
+    public void heapSortTest1() {
         int[] array = createRandomIntArray(100, -100, 100);
 
-        insertionSort(array);
+        heapSort(array);
 
         assertThat(isArraySorted(array)).isTrue();
     }

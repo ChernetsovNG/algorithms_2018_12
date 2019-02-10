@@ -1,8 +1,9 @@
-package ru.nchernetsov;
+package ru.nchernetsov.heapSort;
+
+import ru.nchernetsov.SortType;
 
 import static ru.nchernetsov.Utils.createRandomIntArray;
-import static ru.nchernetsov.insertion.InsertionSort.insertionSort;
-import static ru.nchernetsov.shell.ShellSort.shellSort;
+import static ru.nchernetsov.heapSort.HeapSort.heapSort;
 
 /**
  * Тестируем скорость сортировки массива
@@ -24,11 +25,8 @@ public class SortSpeedTest {
         long startTime = System.nanoTime();
 
         switch (sortType) {
-            case INSERTION:
-                insertionSort(array);
-                break;
-            case SHELL:
-                shellSort(array);
+            case HEAP:
+                heapSort(array);
                 break;
         }
 
