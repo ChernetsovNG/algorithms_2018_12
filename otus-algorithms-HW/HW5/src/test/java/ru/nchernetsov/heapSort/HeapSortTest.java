@@ -1,19 +1,19 @@
-package ru.nchernetsov.shell;
+package ru.nchernetsov.heapSort;
 
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.nchernetsov.sort.Utils.createRandomIntArray;
 import static ru.nchernetsov.sort.Utils.isArraySorted;
-import static ru.nchernetsov.shell.ShellSort.shellSort;
+import static ru.nchernetsov.heapSort.HeapSort.heapSort;
 
-public class ShellSortTest {
+public class HeapSortTest {
 
     @Test
-    public void shellSortTest1() {
+    public void heapSortTest1() {
         int[] array = createRandomIntArray(100, -100, 100);
 
-        shellSort(array);
+        heapSort(array);
 
         assertThat(isArraySorted(array)).isTrue();
     }

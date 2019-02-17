@@ -1,17 +1,16 @@
-package ru.nchernetsov;
+package ru.nchernetsov.heapSort;
 
 import ru.nchernetsov.sort.SortType;
 
-import static ru.nchernetsov.SortSpeedTest.getSortTimeOfRandomArrayMs;
+import static ru.nchernetsov.heapSort.SortSpeedTest.getSortTimeOfRandomArrayMs;
 
 public class Main {
 
     public static void main(String[] args) {
-        sortComparison(SortType.INSERTION);
-        sortComparison(SortType.SHELL);
+        sortComparison(SortType.HEAP);
     }
 
-    private static void sortComparison(SortType sortType) {
+    public static void sortComparison(SortType sortType) {
         // Сравним время сортировки вставками для массивов разной длины
         int[] lengths = new int[]{10, 100, 1000, 10_000, 100_000, 200_000, 500_000};
 
