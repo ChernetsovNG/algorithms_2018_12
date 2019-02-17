@@ -8,29 +8,51 @@ package ru.nchernetsov;
 public class AVLTree {
 
     /**
-     * Корневой узел дерева
+     * Ключ узла
      */
-    private Node root;
+    private int key;
+
+    /**
+     * Высота поддерева с корнем в данном узле
+     */
+    private byte height;
+
+    /**
+     * Левое поддерево
+     */
+    private AVLTree left;
+
+    /**
+     * Правое поддерево
+     */
+    private AVLTree right;
+
+    AVLTree(int key) {
+        this.key = key;
+        this.height = 1;
+        this.left = null;
+        this.right = null;
+    }
 
     public void insert(int k) {
-        root = doInsert(root, k);
+        doInsert(this, k);
     }
 
     public void remove(int k) {
-        root = doRemove(root, k);
+        doRemove(this, k);
     }
 
-    public Node find(int k) {
-        return doFind(root, k);
+    public AVLTree find(int k) {
+        return doFind(this, k);
     }
 
     public int min() {
-        Node minNode = findMin(root);
+        AVLTree minNode = findMin(this);
         return minNode.getKey();
     }
 
     public int max() {
-        Node maxNode = findMax(root);
+        AVLTree maxNode = findMax(this);
         return maxNode.getKey();
     }
 
@@ -41,9 +63,9 @@ public class AVLTree {
      * @param k ключ
      * @return корень дерева после вставки ключа
      */
-    private static Node doInsert(Node p, int k) {
+    private static AVLTree doInsert(AVLTree p, int k) {
         if (p == null) {
-            return new Node(k);
+            return new AVLTree(k);
         } else if (k <= p.getKey()) {
             p.setLeft(doInsert(p.getLeft(), k));
         } else {
@@ -59,7 +81,7 @@ public class AVLTree {
      * @param k удаляемый ключ
      * @return корень дерева с удалённым ключом
      */
-    private static Node doRemove(Node p, int k) {
+    private static AVLTree doRemove(AVLTree p, int k) {
         if (p == null) {
             return null;
         } else if (k < p.getKey()) {
@@ -67,12 +89,12 @@ public class AVLTree {
         } else if (k > p.getKey()) {
             p.setRight(doRemove(p.getRight(), k));
         } else {  // k == p.getKey()
-            Node q = p.getLeft();
-            Node r = p.getRight();
+            AVLTree q = p.getLeft();
+            AVLTree r = p.getRight();
             if (r == null) {
                 return q;
             } else {
-                Node min = findMin(r);
+                AVLTree min = findMin(r);
                 min.setRight(removeMin(r));
                 min.setLeft(q);
                 return balance(min);
@@ -88,7 +110,7 @@ public class AVLTree {
      * @param k ключ для поиска
      * @return найденный узел или null, если узла с таким ключом в дереве нет
      */
-    private static Node doFind(Node p, int k) {
+    private static AVLTree doFind(AVLTree p, int k) {
         if (p == null) {
             return null;
         } else if (p.getKey() == k) {
@@ -108,11 +130,11 @@ public class AVLTree {
      * @param node узел
      * @return коэффициент сбалансированности
      */
-    private static int balanceFactor(Node node) {
+    private static int balanceFactor(AVLTree node) {
         return height(node.getRight()) - height(node.getLeft());
     }
 
-    private static byte height(Node node) {
+    private static byte height(AVLTree node) {
         return node != null ? node.getHeight() : 0;
     }
 
@@ -121,7 +143,7 @@ public class AVLTree {
      *
      * @param node узел
      */
-    private static void fixHeight(Node node) {
+    private static void fixHeight(AVLTree node) {
         byte hLeft = height(node.getLeft());
         byte hRight = height(node.getRight());
         node.setHeight((byte) ((hLeft > hRight ? hLeft : hRight) + 1));
@@ -133,8 +155,8 @@ public class AVLTree {
      * @param p корневой узел дерева
      * @return новый корень дерева после поворота
      */
-    private static Node rotateRight(Node p) {
-        Node q = p.getLeft();
+    private static AVLTree rotateRight(AVLTree p) {
+        AVLTree q = p.getLeft();
         p.setLeft(q.getRight());
         q.setRight(p);
         fixHeight(p);
@@ -148,8 +170,8 @@ public class AVLTree {
      * @param q корневой узел дерева
      * @return новый корень дерева после поворота
      */
-    private static Node rotateLeft(Node q) {
-        Node p = q.getRight();
+    private static AVLTree rotateLeft(AVLTree q) {
+        AVLTree p = q.getRight();
         q.setRight(p.getLeft());
         p.setLeft(q);
         fixHeight(q);
@@ -163,7 +185,7 @@ public class AVLTree {
      * @param p узел
      * @return корень дерева после балансировки
      */
-    private static Node balance(Node p) {
+    private static AVLTree balance(AVLTree p) {
         fixHeight(p);
         if (balanceFactor(p) == 2) {
             if (balanceFactor(p.getRight()) < 0) {
@@ -186,7 +208,7 @@ public class AVLTree {
      * @param p корневой узел дерева
      * @return узел с минимальным ключом
      */
-    private static Node findMin(Node p) {
+    private static AVLTree findMin(AVLTree p) {
         return p.getLeft() != null ? findMin(p.getLeft()) : p;
     }
 
@@ -196,7 +218,7 @@ public class AVLTree {
      * @param p корневой узел дерева
      * @return узел с максимальным ключом
      */
-    private static Node findMax(Node p) {
+    private static AVLTree findMax(AVLTree p) {
         return p.getRight() != null ? findMax(p.getRight()) : p;
     }
 
@@ -206,47 +228,13 @@ public class AVLTree {
      * @param p корневой узел дерева
      * @return корень дерева, из которого удалён узел с минимальным ключом
      */
-    private static Node removeMin(Node p) {
+    private static AVLTree removeMin(AVLTree p) {
         if (p.getLeft() == null) {
             return p.getRight();
         } else {
             p.setLeft(removeMin(p.getLeft()));
             return balance(p);
         }
-    }
-
-    public Node getRoot() {
-        return root;
-    }
-}
-
-class Node {
-
-    /**
-     * Ключ узла
-     */
-    private int key;
-
-    /**
-     * Высота поддерева с корнем в данном узле
-     */
-    private byte height;
-
-    /**
-     * Левое поддерево
-     */
-    private Node left;
-
-    /**
-     * Правое поддерево
-     */
-    private Node right;
-
-    Node(int key) {
-        this.key = key;
-        this.left = null;
-        this.right = null;
-        this.height = 1;
     }
 
     int getKey() {
@@ -257,23 +245,23 @@ class Node {
         return height;
     }
 
-    Node getLeft() {
+    AVLTree getLeft() {
         return left;
     }
 
-    Node getRight() {
+    AVLTree getRight() {
         return right;
     }
 
-    void setHeight(byte height) {
+    private void setHeight(byte height) {
         this.height = height;
     }
 
-    void setLeft(Node left) {
+    private void setLeft(AVLTree left) {
         this.left = left;
     }
 
-    void setRight(Node right) {
+    private void setRight(AVLTree right) {
         this.right = right;
     }
 }
