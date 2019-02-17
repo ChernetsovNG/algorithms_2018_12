@@ -1,6 +1,6 @@
 package ru.nchernetsov.heapSort;
 
-import ru.nchernetsov.SortType;
+import ru.nchernetsov.sort.SortType;
 
 import static ru.nchernetsov.heapSort.SortSpeedTest.getSortTimeOfRandomArrayMs;
 
