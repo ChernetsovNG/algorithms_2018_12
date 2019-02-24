@@ -55,4 +55,24 @@ public class Utils {
 
         return array;
     }
+
+    public static int max(int[] array) {
+        int max = Integer.MIN_VALUE;
+        for (int elem : array) {
+            if (elem > max) {
+                max = elem;
+            }
+        }
+        return max;
+    }
+
+    public static long max(long[] array) {
+        long max = Long.MIN_VALUE;
+        for (long elem : array) {
+            if (elem > max) {
+                max = elem;
+            }
+        }
+        return max;
+    }
 }
