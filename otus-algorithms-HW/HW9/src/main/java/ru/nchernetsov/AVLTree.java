@@ -44,7 +44,7 @@ public class AVLTree {
     }
 
     public void remove(int k) {
-        doRemove(this, k);
+        this.root = doRemove(this.root, k);
     }
 
     public AVLTree find(int k) {

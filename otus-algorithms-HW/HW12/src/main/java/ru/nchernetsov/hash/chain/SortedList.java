@@ -1,11 +1,13 @@
 package ru.nchernetsov.hash.chain;
 
+import java.util.Iterator;
+
 /**
  * Связный список, отсортированный в порядке возрастания ключей элементов
  *
  * @param <T> тип
  */
-class SortedList<T extends Comparable<T>> {
+class SortedList<T extends Comparable<T>> implements Iterable<T> {
 
     private Link<T> first;
 
@@ -14,7 +16,7 @@ class SortedList<T extends Comparable<T>> {
      */
     private int size;
 
-    public SortedList() {
+    SortedList() {
         first = null;
         size = 0;
     }
@@ -24,7 +26,7 @@ class SortedList<T extends Comparable<T>> {
      *
      * @param link вставляемый элемент
      */
-    public void insert(Link<T> link) {
+    void insert(Link<T> link) {
         T key = link.getKey();
         Link<T> previous = null;  // начиная с первого элемента
         Link<T> current = first;
@@ -46,7 +48,7 @@ class SortedList<T extends Comparable<T>> {
      *
      * @param key удаляемый элемент
      */
-    public void delete(T key) {
+    void delete(T key) {
         if (first == null) {
             return;
         }
@@ -73,7 +75,7 @@ class SortedList<T extends Comparable<T>> {
      * @param key ключ
      * @return найденный элемент, или null, если такого элемента нет
      */
-    public Link<T> find(T key) {
+    Link<T> find(T key) {
         Link<T> current = first;
         while (current != null && current.getKey().compareTo(key) <= 0) {
             if (current.getKey().compareTo(key) == 0) {  // элемент найден
@@ -82,6 +84,41 @@ class SortedList<T extends Comparable<T>> {
             current = current.next;
         }
         return null;  // элемент не найден
+    }
+
+    /**
+     * Очистить список
+     */
+    public void clear() {
+        first = null;
+        size = 0;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+
+            Link<T> current = first;
+
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public T next() {
+                if (hasNext()) {
+                    T key = current.getKey();
+                    current = current.next;
+                    return key;
+                }
+                return null;
+            }
+        };
+    }
+
+    public int getSize() {
+        return size;
     }
 }
 
@@ -95,13 +132,13 @@ class Link<T extends Comparable> {
     /**
      * Следующий элемент списка
      */
-    public Link<T> next;
+    Link<T> next;
 
-    public Link(T it) {
+    Link(T it) {
         data = it;
     }
 
-    public T getKey() {
+    T getKey() {
         return data;
     }
 }
