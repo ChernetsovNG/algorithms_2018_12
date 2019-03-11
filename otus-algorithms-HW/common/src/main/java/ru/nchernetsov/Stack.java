@@ -3,36 +3,38 @@ package ru.nchernetsov;
 /**
  * Стек на базе массива
  */
-public class Stack {
+public class Stack<E> {
 
     private int maxSize;
 
-    private int[] stackArray;
+    private Object[] stackArray;
 
     private int top;
 
     public Stack(int size) {
         this.maxSize = size;
-        stackArray = new int[maxSize];
+        stackArray = new Object[maxSize];
         top = -1;
     }
 
-    public void push(int element) {
+    public void push(E element) {
         if (isFull()) {
             throw new IllegalStateException("Stack is full");
         }
         stackArray[++top] = element;
     }
 
-    public int pop() {
+    @SuppressWarnings("unchecked")
+    public E pop() {
         if (isEmpty()) {
             throw new IllegalStateException("Stack is empty");
         }
-        return stackArray[top--];
+        return (E) stackArray[top--];
     }
 
-    public int peek() {
-        return stackArray[top];
+    @SuppressWarnings("unchecked")
+    public E peek() {
+        return (E) stackArray[top];
     }
 
     public boolean isEmpty() {
