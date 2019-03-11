@@ -77,6 +77,27 @@ public class Graph {
         }
     }
 
+    /**
+     * Получить из заданного графа граф с инвертированными рёбрами
+     *
+     * @return граф с инвертированными рёбрами
+     */
+    public Graph getInvertedGraph() {
+        Graph invertedGraph = new Graph(maxVertexCount);
+        // копируем массив вершин из данного графа в инвертированный
+        for (int i = 0; i < vertices.length; i++) {
+            invertedGraph.addVertex(i);
+        }
+        // создаём список векторов смежности инвертированного графа
+        for (int i = 0; i < vertexCount; i++) {
+            MyArrayList<Integer> adjVectorVertexI = adjVectorsList.get(i);
+            for (Integer toVertex : adjVectorVertexI) {
+                invertedGraph.addEdge(toVertex, i);  // добавляем обратное ребро
+            }
+        }
+        return invertedGraph;
+    }
+
     public MyArrayList<MyArrayList<Integer>> getAdjVectorsList() {
         return adjVectorsList;
     }

@@ -11,6 +11,61 @@ public class GraphTest {
 
     @Test
     public void graphTest1() {
+        Graph graph = createTestGraph();
+
+        MyArrayList<MyArrayList<Integer>> adjVectorsList = graph.getAdjVectorsList();
+
+        MyArrayList<Integer> adjVectorVertex0 = adjVectorsList.get(0);
+        MyArrayList<Integer> adjVectorVertex1 = adjVectorsList.get(1);
+        MyArrayList<Integer> adjVectorVertex2 = adjVectorsList.get(2);
+        MyArrayList<Integer> adjVectorVertex3 = adjVectorsList.get(3);
+        MyArrayList<Integer> adjVectorVertex4 = adjVectorsList.get(4);
+
+        assertThat(adjVectorVertex0).hasSize(2);
+        assertThat(adjVectorVertex1).hasSize(3);
+        assertThat(adjVectorVertex2).hasSize(1);
+        assertThat(adjVectorVertex3).hasSize(1);
+        assertThat(adjVectorVertex4).isEmpty();
+
+        assertThat(adjVectorVertex0).containsExactly(1, 2);
+        assertThat(adjVectorVertex1).containsExactly(2, 3, 4);
+        assertThat(adjVectorVertex2).containsExactly(3);
+        assertThat(adjVectorVertex3).containsExactly(4);
+
+        List<Integer> traversalOrder = new ArrayList<>();
+        graph.dfs(0, vertex -> traversalOrder.add(vertex.getIndex()));
+
+        assertThat(traversalOrder).containsExactly(0, 2, 3, 4, 1);
+    }
+
+    @Test
+    public void getInvertedGraphTest1() {
+        Graph graph = createTestGraph();
+
+        Graph invertedGraph = graph.getInvertedGraph();
+
+        // проверяем вектора смежности инвертированного графа
+        MyArrayList<MyArrayList<Integer>> adjVectorsList = invertedGraph.getAdjVectorsList();
+
+        MyArrayList<Integer> adjVectorVertex0 = adjVectorsList.get(0);
+        MyArrayList<Integer> adjVectorVertex1 = adjVectorsList.get(1);
+        MyArrayList<Integer> adjVectorVertex2 = adjVectorsList.get(2);
+        MyArrayList<Integer> adjVectorVertex3 = adjVectorsList.get(3);
+        MyArrayList<Integer> adjVectorVertex4 = adjVectorsList.get(4);
+
+        assertThat(adjVectorVertex0).isEmpty();
+        assertThat(adjVectorVertex1).hasSize(1);
+        assertThat(adjVectorVertex2).hasSize(2);
+        assertThat(adjVectorVertex3).hasSize(2);
+        assertThat(adjVectorVertex4).hasSize(2);
+
+        assertThat(adjVectorVertex1).containsExactly(0);
+        assertThat(adjVectorVertex2).containsExactly(0, 1);
+        assertThat(adjVectorVertex3).containsExactly(1, 2);
+        assertThat(adjVectorVertex4).containsExactly(1, 3);
+    }
+
+    private Graph createTestGraph() {
         Graph graph = new Graph(10);
 
         graph.addVertex(0);
@@ -27,28 +82,6 @@ public class GraphTest {
         graph.addEdge(1, 4);
         graph.addEdge(3, 4);
 
-        MyArrayList<MyArrayList<Integer>> adjVectorsList = graph.getAdjVectorsList();
-
-        MyArrayList<Integer> adjVectorVertex0 = adjVectorsList.get(0);
-        MyArrayList<Integer> adjVectorVertex1 = adjVectorsList.get(1);
-        MyArrayList<Integer> adjVectorVertex2 = adjVectorsList.get(2);
-        MyArrayList<Integer> adjVectorVertex3 = adjVectorsList.get(3);
-        MyArrayList<Integer> adjVectorVertex4 = adjVectorsList.get(4);
-
-        assertThat(adjVectorVertex0).hasSize(2);
-        assertThat(adjVectorVertex1).hasSize(3);
-        assertThat(adjVectorVertex2).hasSize(1);
-        assertThat(adjVectorVertex3).hasSize(1);
-        assertThat(adjVectorVertex4).hasSize(0);
-
-        assertThat(adjVectorVertex0).containsExactly(1, 2);
-        assertThat(adjVectorVertex1).containsExactly(2, 3, 4);
-        assertThat(adjVectorVertex2).containsExactly(3);
-        assertThat(adjVectorVertex3).containsExactly(4);
-
-        List<Integer> traversalOrder = new ArrayList<>();
-        graph.dfs(0, vertex -> traversalOrder.add(vertex.getIndex()));
-
-        assertThat(traversalOrder).containsExactly(0, 2, 3, 4, 1);
+        return graph;
     }
 }
