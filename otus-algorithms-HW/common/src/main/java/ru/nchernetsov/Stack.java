@@ -7,13 +7,14 @@ public class Stack<E> {
 
     private int maxSize;
 
-    private Object[] stackArray;
+    private E[] stackArray;
 
     private int top;
 
+    @SuppressWarnings("unchecked")
     public Stack(int size) {
         this.maxSize = size;
-        stackArray = new Object[maxSize];
+        stackArray = (E[]) new Object[maxSize];
         top = -1;
     }
 
@@ -29,12 +30,12 @@ public class Stack<E> {
         if (isEmpty()) {
             throw new IllegalStateException("Stack is empty");
         }
-        return (E) stackArray[top--];
+        return stackArray[top--];
     }
 
     @SuppressWarnings("unchecked")
     public E peek() {
-        return (E) stackArray[top];
+        return stackArray[top];
     }
 
     public boolean isEmpty() {
