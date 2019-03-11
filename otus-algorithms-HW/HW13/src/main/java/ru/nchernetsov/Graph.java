@@ -98,6 +98,39 @@ public class Graph {
         return invertedGraph;
     }
 
+    /*
+
+    Пусть G — исходный граф, H — инвертированный граф.
+    В массиве ord будем хранить номера вершин в порядке окончания обработки
+    поиском в глубину в графе G. В результате получаем массив component,
+    который каждой вершине сопоставляет номер её компоненты.
+
+    function dfs1(v):
+       color[v] = 1
+       for (v, u) in E
+           if not visited[u]
+               dfs1(G[v][u])
+       Добавляем вершину v в конец списка ord
+
+   function dfs2(v):
+       component[v] = col
+       for (v, u) in E
+           if (вершина u еще не находится ни в какой компоненте)
+               dfs2(H[v][u])
+
+   function main():
+       считываем исходные данные, формируем массивы G и H
+       for u in V
+           if not visited[u]
+               dfs1(u)
+       col = 1
+       for (по всем вершинам u списка ord[] в обратном порядке)
+           if (вершина u не находится ни в какой компоненте)
+               dfs2(u)
+               col++
+
+     */
+
     public MyArrayList<MyArrayList<Integer>> getAdjVectorsList() {
         return adjVectorsList;
     }
