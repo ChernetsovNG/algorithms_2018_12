@@ -35,6 +35,9 @@ public class Stack<E> {
 
     @SuppressWarnings("unchecked")
     public E peek() {
+        if (isEmpty()) {
+            throw new IllegalStateException("Stack is empty");
+        }
         return stackArray[top];
     }
 

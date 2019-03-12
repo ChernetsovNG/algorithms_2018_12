@@ -1,5 +1,7 @@
 package ru.nchernetsov;
 
+import ru.nchernetsov.sort.Utils;
+
 import java.util.Comparator;
 import java.util.function.Consumer;
 
@@ -49,16 +51,16 @@ public class Graph {
     /**
      * Алгоритм обхода графа (поиска) в глубину
      */
-    public void dfs(int startVertexIndex, Consumer<Vertex> action) {
+    public void dfs(int startVertexIndex, Consumer<Vertex> action, boolean resetIsVisited) {
         Stack<Integer> stack = new Stack<>(vertexCount);
-
         stack.push(startVertexIndex);
         while (!stack.isEmpty()) {
-            // Берём верхнюю вершину
             Integer topVertexIndex = stack.pop();
             Vertex topVertex = vertices[topVertexIndex];
             if (!topVertex.isVisited()) {
-                action.accept(topVertex);
+                if (action != null) {
+                    action.accept(topVertex);
+                }
                 topVertex.setVisited(true);
                 // Кладём в стек все смежные непосещённые вершины
                 MyArrayList<Integer> topVertexAdjVector = adjVectorsList.get(topVertexIndex);
@@ -72,8 +74,10 @@ public class Graph {
         }
 
         // после обхода проставляем в вершинах isVisited = false
-        for (int i = 0; i < vertexCount; i++) {
-            vertices[i].setVisited(false);
+        if (resetIsVisited) {
+            for (int i = 0; i < vertexCount; i++) {
+                vertices[i].setVisited(false);
+            }
         }
     }
 
@@ -98,38 +102,80 @@ public class Graph {
         return invertedGraph;
     }
 
-    /*
-
-    Пусть G — исходный граф, H — инвертированный граф.
-    В массиве ord будем хранить номера вершин в порядке окончания обработки
-    поиском в глубину в графе G. В результате получаем массив component,
-    который каждой вершине сопоставляет номер её компоненты.
-
-    function dfs1(v):
-       color[v] = 1
-       for (v, u) in E
-           if not visited[u]
-               dfs1(G[v][u])
-       Добавляем вершину v в конец списка ord
-
-   function dfs2(v):
-       component[v] = col
-       for (v, u) in E
-           if (вершина u еще не находится ни в какой компоненте)
-               dfs2(H[v][u])
-
-   function main():
-       считываем исходные данные, формируем массивы G и H
-       for u in V
-           if not visited[u]
-               dfs1(u)
-       col = 1
-       for (по всем вершинам u списка ord[] в обратном порядке)
-           if (вершина u не находится ни в какой компоненте)
-               dfs2(u)
-               col++
-
+    /**
+     * Алгоритм Косарайю поиска сильно связных компонент графа
+     *
+     * @return список списков из индексов вершин, образующих сильно связанные компоненты графа
      */
+    public MyArrayList<MyArrayList<Integer>> getStronglyConnectedComponents() {
+        int[] stronglyConnectedComponentsArray = getStronglyConnectedComponentsArray();
+
+        int componentsCount = Utils.max(stronglyConnectedComponentsArray);
+
+        MyArrayList<MyArrayList<Integer>> result = new MyArrayList<>(componentsCount);
+        for (int i = 0; i < componentsCount; i++) {
+            result.add(new MyArrayList<>());
+        }
+
+        for (int vertexIndex = 0; vertexIndex < stronglyConnectedComponentsArray.length; vertexIndex++) {
+            int componentNum = stronglyConnectedComponentsArray[vertexIndex];
+            // добавляем к соответствующему компоненту индекс вершины
+            result.get(componentNum - 1).add(vertexIndex);
+        }
+
+        return result;
+    }
+
+    /**
+     * Алгоритм Косарайю поиска сильно связных компонент графа
+     *
+     * @return массив component, который каждой вершине сопоставляет номер её компонента связности
+     * Компоненты связности нумеруются от единицы
+     */
+    public int[] getStronglyConnectedComponentsArray() {
+        // Пусть G — исходный граф (this), H — инвертированный граф
+        Graph h = getInvertedGraph();
+
+        // В массиве ord будем хранить номера вершин в порядке окончания обработки
+        // поиском в глубину в графе G
+        int[] ord = new int[vertexCount];
+
+        final int[] j = {0};
+        for (int i = 0; i < vertexCount; i++) {
+            Vertex vertex = vertices[i];
+            if (!vertex.isVisited()) {
+                dfs(i, v -> {
+                    ord[j[0]] = v.getIndex();
+                    j[0] = j[0] + 1;
+                }, false);
+            }
+        }
+
+        // инициализируем массив результатов
+        int[] components = new int[vertexCount];
+        for (int i = 0; i < vertexCount; i++) {
+            components[i] = -1;
+        }
+
+        // индекс компонента связности
+        final int[] componentNum = {1};
+
+        // по всем вершинам из списка ord[] в обратном порядке
+        for (int i = ord.length - 1; i >= 0; i--) {
+            int vertexIndex = ord[i];
+            // если вершина еще не находится ни в какой компоненте связности
+            if (components[vertexIndex] == -1) {
+                h.dfs(vertexIndex, v -> components[v.getIndex()] = componentNum[0], false);
+                componentNum[0] = componentNum[0] + 1;
+            }
+        }
+
+        for (int i = 0; i < vertexCount; i++) {
+            vertices[i].setVisited(false);
+        }
+
+        return components;
+    }
 
     public MyArrayList<MyArrayList<Integer>> getAdjVectorsList() {
         return adjVectorsList;
