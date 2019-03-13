@@ -5,47 +5,37 @@ package ru.nchernetsov;
  */
 public class Stack<E> {
 
-    private int maxSize;
+    private MyArrayList<E> stackArray;
 
-    private E[] stackArray;
+    public Stack() {
+        this(10);
+    }
 
-    private int top;
-
-    @SuppressWarnings("unchecked")
     public Stack(int size) {
-        this.maxSize = size;
-        stackArray = (E[]) new Object[maxSize];
-        top = -1;
+        stackArray = new MyArrayList<>(size);
     }
 
     public void push(E element) {
-        if (isFull()) {
-            throw new IllegalStateException("Stack is full");
-        }
-        stackArray[++top] = element;
+        stackArray.add(element);
     }
 
-    @SuppressWarnings("unchecked")
     public E pop() {
         if (isEmpty()) {
             throw new IllegalStateException("Stack is empty");
         }
-        return stackArray[top--];
+        int size = stackArray.size();
+        return stackArray.remove(size - 1);
     }
 
-    @SuppressWarnings("unchecked")
     public E peek() {
         if (isEmpty()) {
             throw new IllegalStateException("Stack is empty");
         }
-        return stackArray[top];
+        int size = stackArray.size();
+        return stackArray.get(size - 1);
     }
 
     public boolean isEmpty() {
-        return top == -1;
-    }
-
-    public boolean isFull() {
-        return top == maxSize - 1;
+        return stackArray.size() == 0;
     }
 }
