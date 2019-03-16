@@ -1,57 +1,21 @@
 package ru.nchernetsov;
 
+import ru.nchernetsov.graph.Graph;
+import ru.nchernetsov.graph.Vertex;
 import ru.nchernetsov.sort.Utils;
 
-import java.util.Comparator;
 import java.util.function.Consumer;
 
-public class Graph {
-
-    /**
-     * Вектора смежности == A[N][S_max], где S_max - максимальная степень вершины графа
-     */
-    private final MyArrayList<MyArrayList<Integer>> adjVectorsList;
-
-    private final int maxVertexCount;
-
-    /**
-     * Массив вершин графа
-     */
-    private final Vertex[] vertices;
-
-    private int vertexCount;
-
-    public Graph(int maxSize) {
-        maxVertexCount = maxSize;
-        vertices = new Vertex[maxVertexCount];
-        adjVectorsList = new MyArrayList<>(maxVertexCount);
-        for (int i = 0; i < maxSize; i++) {
-            adjVectorsList.add(new MyArrayList<>(10));
-        }
-        vertexCount = 0;
-    }
-
-    public void addVertex(int index) {
-        if (vertexCount >= maxVertexCount) {
-            throw new IllegalArgumentException("Graph is full (maximum size = " + maxVertexCount + " reached)");
-        }
-        Vertex newVertex = new Vertex(index);
-        vertices[index] = newVertex;
-        vertexCount++;
-    }
-
-    public void addEdge(int from, int to) {
-        // добавляем к вектору смежности первой вершины вторую вершину
-        MyArrayList<Integer> fromVertexAdjVector = adjVectorsList.get(from);
-        fromVertexAdjVector.add(to);
-        // сортируем смежные вершины по возрастанию
-        fromVertexAdjVector.sort(Comparator.naturalOrder());
-    }
+public class GraphAlg {
 
     /**
      * Алгоритм обхода графа (поиска) в глубину
      */
-    public void dfs(int startVertexIndex, Consumer<Vertex> action, boolean resetIsVisited) {
+    public static void dfs(Graph graph, int startVertexIndex, Consumer<Vertex> action, boolean resetIsVisited) {
+        int vertexCount = graph.getVertexCount();
+        Vertex[] vertices = graph.getVertices();
+        MyArrayList<MyArrayList<Integer>> adjVectorsList = graph.getAdjVectorsList();
+
         Stack<Integer> stack = new Stack<>(vertexCount);
         stack.push(startVertexIndex);
         while (!stack.isEmpty()) {
@@ -86,7 +50,12 @@ public class Graph {
      *
      * @return граф с инвертированными рёбрами
      */
-    public Graph getInvertedGraph() {
+    public static Graph getInvertedGraph(Graph graph) {
+        int maxVertexCount = graph.getMaxVertexCount();
+        int vertexCount = graph.getVertexCount();
+        Vertex[] vertices = graph.getVertices();
+        MyArrayList<MyArrayList<Integer>> adjVectorsList = graph.getAdjVectorsList();
+
         Graph invertedGraph = new Graph(maxVertexCount);
         // копируем массив вершин из данного графа в инвертированный
         for (int i = 0; i < vertices.length; i++) {
@@ -107,8 +76,8 @@ public class Graph {
      *
      * @return список списков из индексов вершин, образующих сильно связанные компоненты графа
      */
-    public MyArrayList<MyArrayList<Integer>> getStronglyConnectedComponents() {
-        int[] stronglyConnectedComponentsArray = getStronglyConnectedComponentsArray();
+    public static MyArrayList<MyArrayList<Integer>> getStronglyConnectedComponents(Graph graph) {
+        int[] stronglyConnectedComponentsArray = getStronglyConnectedComponentsArray(graph);
 
         int componentsCount = Utils.max(stronglyConnectedComponentsArray);
 
@@ -132,9 +101,12 @@ public class Graph {
      * @return массив component, который каждой вершине сопоставляет номер её компонента связности
      * Компоненты связности нумеруются от единицы
      */
-    public int[] getStronglyConnectedComponentsArray() {
+    public static int[] getStronglyConnectedComponentsArray(Graph graph) {
+        int vertexCount = graph.getVertexCount();
+        Vertex[] vertices = graph.getVertices();
+
         // Пусть G — исходный граф (this), H — инвертированный граф
-        Graph h = getInvertedGraph();
+        Graph h = getInvertedGraph(graph);
 
         // В массиве ord будем хранить номера вершин в порядке окончания обработки
         // поиском в глубину в графе G
@@ -144,7 +116,7 @@ public class Graph {
         for (int i = 0; i < vertexCount; i++) {
             Vertex vertex = vertices[i];
             if (!vertex.isVisited()) {
-                dfs(i, v -> {
+                dfs(graph, i, v -> {
                     ord[j[0]] = v.getIndex();
                     j[0] = j[0] + 1;
                 }, false);
@@ -165,7 +137,7 @@ public class Graph {
             int vertexIndex = ord[i];
             // если вершина еще не находится ни в какой компоненте связности
             if (components[vertexIndex] == -1) {
-                h.dfs(vertexIndex, v -> components[v.getIndex()] = componentNum[0], false);
+                dfs(h, vertexIndex, v -> components[v.getIndex()] = componentNum[0], false);
                 componentNum[0] = componentNum[0] + 1;
             }
         }
@@ -175,9 +147,5 @@ public class Graph {
         }
 
         return components;
-    }
-
-    public MyArrayList<MyArrayList<Integer>> getAdjVectorsList() {
-        return adjVectorsList;
     }
 }

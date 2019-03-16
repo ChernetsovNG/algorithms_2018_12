@@ -1,13 +1,15 @@
 package ru.nchernetsov;
 
 import org.junit.Test;
+import ru.nchernetsov.graph.Graph;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static ru.nchernetsov.GraphAlg.*;
 
-public class GraphTest {
+public class GraphAlgTest {
 
     @Test
     public void graphTest1() {
@@ -33,7 +35,7 @@ public class GraphTest {
         assertThat(adjVectorVertex3).containsExactly(4);
 
         List<Integer> traversalOrder = new ArrayList<>();
-        graph.dfs(0, vertex -> traversalOrder.add(vertex.getIndex()), true);
+        dfs(graph, 0, vertex -> traversalOrder.add(vertex.getIndex()), true);
 
         assertThat(traversalOrder).containsExactly(0, 2, 3, 4, 1);
     }
@@ -42,7 +44,7 @@ public class GraphTest {
     public void getInvertedGraphTest1() {
         Graph graph = createTestGraph();
 
-        Graph invertedGraph = graph.getInvertedGraph();
+        Graph invertedGraph = getInvertedGraph(graph);
 
         // проверяем вектора смежности инвертированного графа
         MyArrayList<MyArrayList<Integer>> adjVectorsList = invertedGraph.getAdjVectorsList();
@@ -95,7 +97,7 @@ public class GraphTest {
         graph.addEdge(9, 6);
         graph.addEdge(10, 9);
 
-        MyArrayList<MyArrayList<Integer>> stronglyConnectedComponents = graph.getStronglyConnectedComponents();
+        MyArrayList<MyArrayList<Integer>> stronglyConnectedComponents = getStronglyConnectedComponents(graph);
 
         assertThat(stronglyConnectedComponents).hasSize(4);
 
