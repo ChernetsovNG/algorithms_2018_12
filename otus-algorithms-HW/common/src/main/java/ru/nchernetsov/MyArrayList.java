@@ -58,6 +58,10 @@ public class MyArrayList<T> extends AbstractList<T> implements List<T> {
         return (busySize == 0);
     }
 
+    public boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
     public boolean contains(Object o) {
         for (int i = 0; i < busySize; i++) {
             if (Objects.equals(array[i], o)) {
@@ -361,6 +365,8 @@ public class MyArrayList<T> extends AbstractList<T> implements List<T> {
             lastRet = -1;
         }
     }
+
+    // Not implemented
 
     public ListIterator<T> listIterator() {
         return null;

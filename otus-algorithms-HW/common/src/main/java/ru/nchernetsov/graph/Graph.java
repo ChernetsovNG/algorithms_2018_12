@@ -20,11 +20,11 @@ public class Graph {
 
     private int vertexCount;
 
-    public Graph(int maxSize) {
-        maxVertexCount = maxSize;
+    public Graph(int maxVerticesCount) {
+        maxVertexCount = maxVerticesCount;
         vertices = new Vertex[maxVertexCount];
         adjVectorsList = new MyArrayList<>(maxVertexCount);
-        for (int i = 0; i < maxSize; i++) {
+        for (int i = 0; i < maxVerticesCount; i++) {
             adjVectorsList.add(new MyArrayList<>(10));
         }
         vertexCount = 0;
