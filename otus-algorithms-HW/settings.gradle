@@ -1,10 +1,10 @@
 rootProject.name = 'otus-algorithms-HW'
+include 'common'
 include 'HW3'
 include 'HW4'
 include 'HW5'
-include 'common'
 include 'HW6'
 include 'HW7'
 include 'HW13'
 include 'HW14'
-
+include 'HW15'
