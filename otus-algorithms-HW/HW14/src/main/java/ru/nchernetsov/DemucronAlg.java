@@ -1,6 +1,6 @@
 package ru.nchernetsov;
 
-import ru.nchernetsov.graph.Graph;
+import ru.nchernetsov.graph.DirectedGraph;
 
 import java.util.Comparator;
 
@@ -14,7 +14,7 @@ public class DemucronAlg {
      * второй индекс - массив с номерами вершин, принадлежащих этому уровню
      * (номер уровня отсчитывается от нуля)
      */
-    public static int[][] demucronTopologySort(Graph graph) {
+    public static int[][] demucronTopologySort(DirectedGraph graph) {
         int vertexCount = graph.getVertexCount();
         MyArrayList<MyArrayList<Integer>> adjVectorsList = graph.getAdjVectorsList();
 
