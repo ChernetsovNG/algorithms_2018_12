@@ -33,7 +33,7 @@ public class MinHeap<E extends Comparable<E>> extends Heap<E> {
             int rightChildIndex = leftChildIndex + 1;
 
             // Определение меньшего потомка
-            if (rightChildIndex < currentSize && heapArray[leftChildIndex].compareTo(heapArray[rightChildIndex]) < 0) {
+            if (rightChildIndex >= currentSize || heapArray[leftChildIndex].compareTo(heapArray[rightChildIndex]) < 0) {
                 smallerChild = leftChildIndex;
             } else {
                 smallerChild = rightChildIndex;

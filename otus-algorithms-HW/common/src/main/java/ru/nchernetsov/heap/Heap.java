@@ -22,12 +22,8 @@ public abstract class Heap<E extends Comparable<E>> {
         }
         E root = heapArray[0];
         heapArray[0] = heapArray[--currentSize];
-        if (currentSize > 0) {
-            drown(0);
-            return root;
-        } else {
-            return null;
-        }
+        drown(0);
+        return root;
     }
 
     /**
