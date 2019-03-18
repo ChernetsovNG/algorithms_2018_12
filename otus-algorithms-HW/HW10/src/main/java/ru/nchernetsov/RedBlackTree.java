@@ -1,15 +1,18 @@
 package ru.nchernetsov;
 
-public class RedBlackTree<T extends Comparable<T>> {
+import java.util.Iterator;
+import java.util.Stack;
+
+public class RedBlackTree<T extends Comparable<T>> implements Iterable<T> {
 
     private final RedBlackNode<T> nil = new RedBlackNode<>();
 
     private RedBlackNode<T> root = nil;
 
     public RedBlackTree() {
+        root.parent = nil;
         root.left = nil;
         root.right = nil;
-        root.parent = nil;
     }
 
     /**
@@ -58,6 +61,15 @@ public class RedBlackTree<T extends Comparable<T>> {
         if (z != null) {
             doRemove(z);
         }
+    }
+
+    /**
+     * Очистить дерево
+     */
+    public void clear() {
+        root.parent = nil;
+        root.left = nil;
+        root.right = nil;
     }
 
     private void doRemove(RedBlackNode<T> z) {
@@ -416,5 +428,45 @@ public class RedBlackTree<T extends Comparable<T>> {
         } else {
             return Math.max(treeHeight(node.left), treeHeight(node.right)) + 1;
         }
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new RedBlackTreeIterator<>(root);
+    }
+}
+
+/**
+ * Итератор для обхода красно-чёрного дерева в порядке возраствния ключей
+ *
+ * @param <T>
+ */
+class RedBlackTreeIterator<T extends Comparable<T>> implements Iterator<T> {
+
+    private Stack<RedBlackNode<T>> stack;
+
+    RedBlackTreeIterator(RedBlackNode<T> root) {
+        stack = new Stack<>();
+        while (root != null) {
+            stack.push(root);
+            root = root.left;
+        }
+    }
+
+    public boolean hasNext() {
+        return !stack.isEmpty();
+    }
+
+    public T next() {
+        RedBlackNode<T> node = stack.pop();
+        T result = node.key;
+        if (node.right != null) {
+            node = node.right;
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+        }
+        return result;
     }
 }
