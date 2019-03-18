@@ -2,6 +2,8 @@ package ru.nchernetsov;
 
 import org.junit.Test;
 
+import java.util.Random;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class TreapTest {
@@ -36,5 +38,19 @@ public class TreapTest {
         assertThat(treap.getRight().getRight().getX()).isEqualTo(14);
         assertThat(treap.getRight().getRight().getLeft()).isNull();
         assertThat(treap.getRight().getRight().getRight()).isNull();
+    }
+
+    @Test
+    public void treapTest2() {
+        Treap treap = new Treap(0, 0);
+        for (int i = 1; i < 1000; i++) {
+            treap = treap.add(i, 1001 - i);
+        }
+
+        Random r = new Random();
+        for (int i = 0; i < 50; i++) {
+            int n = r.nextInt(1000);
+            treap = treap.remove(n);
+        }
     }
 }

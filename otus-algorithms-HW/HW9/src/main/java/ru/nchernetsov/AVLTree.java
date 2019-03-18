@@ -17,6 +17,8 @@ public class AVLTree {
      */
     private byte height;
 
+    private AVLTree root;
+
     /**
      * Левое поддерево
      */
@@ -27,7 +29,10 @@ public class AVLTree {
      */
     private AVLTree right;
 
-    AVLTree(int key) {
+    public AVLTree() {
+    }
+
+    public AVLTree(int key) {
         this.key = key;
         this.height = 1;
         this.left = null;
@@ -35,7 +40,7 @@ public class AVLTree {
     }
 
     public void insert(int k) {
-        doInsert(this, k);
+        this.root = doInsert(this.root, k);
     }
 
     public void remove(int k) {
@@ -243,6 +248,10 @@ public class AVLTree {
 
     byte getHeight() {
         return height;
+    }
+
+    public AVLTree getRoot() {
+        return root;
     }
 
     AVLTree getLeft() {
