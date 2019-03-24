@@ -5,8 +5,8 @@ import ru.nchernetsov.graph.DirectedGraph;
 import ru.nchernetsov.graph.Graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.nchernetsov.DemucronAlg.convertAdjVectorsToAdjMatrix;
 import static ru.nchernetsov.DemucronAlg.demucronTopologySort;
+import static ru.nchernetsov.graph.GraphUtils.convertAdjVectorsToAdjMatrix;
 
 public class DemucronAlgTest {
 
