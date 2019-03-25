@@ -147,7 +147,12 @@ public class DijkstraAlg {
         int vertex1 = vertexTo;
         int vertex2 = vertexTo;
         while (vertex1 != vertexFrom) {
-            vertex1 = sPath[vertex2].getParentVertex();
+            DistanceParent distanceParentVertex2 = sPath[vertex2];
+            int distanceToVertex2 = distanceParentVertex2.getDistance();
+            if (distanceToVertex2 == INFINITY) {  // пути от вершины vertexFrom до vertexTo нет
+                return new Edge[0];
+            }
+            vertex1 = distanceParentVertex2.getParentVertex();
             int distFromVertex1to2 = adjMatrix[vertex1][vertex2];
             result.add(new Edge(vertex1, vertex2, distFromVertex1to2));
             vertex2 = vertex1;
