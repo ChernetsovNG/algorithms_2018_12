@@ -119,7 +119,7 @@ public class DijkstraAlg {
             }
             int currentToFringe = adjMatrix[currentVert][j];
             int startToFringe;
-            if (startToCurrent + currentToFringe <= INFINITY) {
+            if (startToCurrent <= INFINITY - currentToFringe) {
                 startToFringe = startToCurrent + currentToFringe;
             } else {
                 startToFringe = INFINITY;
