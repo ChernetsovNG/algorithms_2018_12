@@ -15,24 +15,24 @@ public class DistanceParent {
      */
     private int parentVertex;
 
-    public DistanceParent(int distance, int parentVertex) {
+    DistanceParent(int distance, int parentVertex) {
         this.distance = distance;
         this.parentVertex = parentVertex;
     }
 
-    public int getDistance() {
+    int getDistance() {
         return distance;
     }
 
-    public int getParentVertex() {
+    int getParentVertex() {
         return parentVertex;
     }
 
-    public void setDistance(int distance) {
+    void setDistance(int distance) {
         this.distance = distance;
     }
 
-    public void setParentVertex(int parentVertex) {
+    void setParentVertex(int parentVertex) {
         this.parentVertex = parentVertex;
     }
 
