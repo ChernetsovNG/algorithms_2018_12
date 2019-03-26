@@ -46,4 +46,39 @@ public class AStarAlgTest {
         assertThat(pathFrom0to7verticesIndices).hasSize(3);
         assertThat(pathFrom0to7verticesIndices).containsExactly(0, 5, 7);
     }
+
+    @Test
+    public void aStarAlgTest2() {
+        WeightedDirectedGraph2D graph = new WeightedDirectedGraph2D(7, 8);
+
+        graph.addVertex(0, 0.0, 0.0);
+        graph.addVertex(1, 2.0, 0.0);
+        graph.addVertex(2, 4.0, 0.0);
+        graph.addVertex(3, 6.0, 0.0);
+        graph.addVertex(4, 2.0, 1.0);
+        graph.addVertex(5, 4.0, 1.0);
+        graph.addVertex(6, 3.0, -1.0);
+
+        graph.addEdge(0, 1);
+        graph.addEdge(1, 2);
+        graph.addEdge(2, 3);
+        graph.addEdge(0, 4);
+        graph.addEdge(4, 5);
+        graph.addEdge(5, 3);
+        graph.addEdge(0, 6);
+        graph.addEdge(6, 3);
+
+        Path pathFrom0to3 = aStarAlg(graph, 0, 3);
+        MyArrayList<VertexPoint2D> pathFrom0to3vertices = pathFrom0to3.getVertices();
+        List<Integer> pathFrom0to3verticesIndices = pathFrom0to3vertices.stream()
+            .map(VertexPoint2D::getIndex)
+            .collect(Collectors.toList());
+
+        assertThat(pathFrom0to3verticesIndices).hasSize(4);
+        assertThat(pathFrom0to3verticesIndices).containsExactly(0, 1, 2, 3);
+
+        Path pathFrom3to0 = aStarAlg(graph, 3, 0);
+
+        assertThat(pathFrom3to0.getVertices()).hasSize(0);
+    }
 }
