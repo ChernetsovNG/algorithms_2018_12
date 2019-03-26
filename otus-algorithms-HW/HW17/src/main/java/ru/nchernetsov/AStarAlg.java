@@ -11,11 +11,11 @@ import ru.nchernetsov.tuples.Pair;
 public class AStarAlg {
 
     /**
-     * Алгоритм Дейкстры поиска кратчайшего пути во взвешенном ориентированном графе
+     * Алгоритм A* поиска кратчайшего пути во взвешенном ориентированном графе
      *
-     * @param graph      взвешенный ориентированный граф
-     * @param vertexFrom начальная вершина
-     * @param vertexTo   конечная вершина
+     * @param graph      взвешенный ориентированный граф, образованный вершинами в виде точек на плоскости
+     * @param vertexFrom индекс начальной вершины
+     * @param vertexTo   индекс конечной вершины
      * @return массив вершин, составляющих кратчайший путь из начальной вершины в конечную
      */
     public static Path aStarAlg(WeightedDirectedGraph2D graph, int vertexFrom, int vertexTo) {
