@@ -13,6 +13,11 @@ import java.util.stream.Collectors;
 public class BoyerMoore {
 
     /**
+     * В процессе работы алгоритма будем накапливать алфавит из использованных символов
+     */
+    private static final Map<Character, Integer> cachedAlphabet = new HashMap<>();
+
+    /**
      * Алгоритм Бойера-Мура-Хорспула для вычисления вхождений заданного шаблона в текст
      *
      * @param text    текст
@@ -22,14 +27,17 @@ public class BoyerMoore {
     public static List<Integer> boyerMooreHorspoolAlg(String text, String pattern) {
         int patternLen = pattern.length();
         int textLen = text.length();
-        Map<Character, Integer> alphabetMap = UNICODE_ALPHABET_MAP;
+
+        fillCachedAlphabet(text);
+        fillCachedAlphabet(pattern);
+
+        Map<Character, Integer> alphabetMap = cachedAlphabet;
 
         List<Integer> matches = new ArrayList<>();
 
         int[][] badCharacterTable = badCharacterTable(pattern, alphabetMap);
 
         int checkToIndex = textLen - patternLen + 1;
-
         int shift = 0;
         while (shift < checkToIndex) {
             int j = patternLen - 1;
@@ -71,12 +79,12 @@ public class BoyerMoore {
             table[i][0] = -1;
         }
         for (int i = 0; i < patternLen; i++) {
-
             support[alphabetMap.get(pattern.charAt(i))] = i;
             for (int j = 0; j < alphabetLen; j++) {
                 table[j][i + 1] = support[j];
             }
         }
+
         return table;
     }
 
@@ -122,15 +130,20 @@ public class BoyerMoore {
         return result;
     }
 
-    /**
-     * Для каждого символа Юникода - его индекс
-     */
-    private static final Map<Character, Integer> UNICODE_ALPHABET_MAP = new HashMap<>();
+    private static void fillCachedAlphabet(String text) {
+        int textLen = text.length();
 
-    static {
-        for (int i = 0; i <= 65535; i++) {
+        int maxCharIndex = 0;
+        for (int i = 0; i < textLen; i++) {
+            int textSymbolIndex = text.charAt(i);
+            if (textSymbolIndex > maxCharIndex) {
+                maxCharIndex = textSymbolIndex;
+            }
+        }
+
+        for (int i = 0; i <= maxCharIndex; i++) {
             char unicodeChar = (char) i;
-            UNICODE_ALPHABET_MAP.put(unicodeChar, i);
+            cachedAlphabet.putIfAbsent(unicodeChar, i);
         }
     }
 }
