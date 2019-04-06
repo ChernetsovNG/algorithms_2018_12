@@ -11,4 +11,5 @@ include 'HW15'
 include 'HW16'
 include 'HW17'
 include 'HW18'
+include 'BoyerMoore'
 
