@@ -94,8 +94,8 @@ public class BoyerMoore {
      * @param fileName имя файла
      * @return список разобранных тестовых примеров
      */
-    public static List<TestCase> readTsvFileFromResources(String fileName) {
-        List<TestCase> result = new ArrayList<>();
+    public static List<BoyerMooreTestCase> readTestTsvFileFromResources(String fileName) {
+        List<BoyerMooreTestCase> result = new ArrayList<>();
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         try (InputStream inputStream = classloader.getResourceAsStream(fileName);
              BufferedReader tsvFile = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
@@ -122,7 +122,41 @@ public class BoyerMoore {
                         .map(Integer::parseInt)
                         .collect(Collectors.toList());
                 }
-                result.add(new TestCase(text, pattern, occurrencesIndices));
+                result.add(new BoyerMooreTestCase(text, pattern, occurrencesIndices));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * Функция для чтения и разбора txt-файла из ресурсов
+     *
+     * @param fileName имя файла
+     * @return список разобранных тестовых примеров
+     */
+    public static List<FindPrefixesTestCase> readTestTxtFileFromResources(String fileName) {
+        List<FindPrefixesTestCase> result = new ArrayList<>();
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        try (InputStream inputStream = classloader.getResourceAsStream(fileName);
+             BufferedReader tsvFile = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+            // в первой строке общее число записей
+            String firstRow = tsvFile.readLine();
+            int rowsCount = Integer.parseInt(firstRow);
+            /*
+            Первая строка - количество записей, первый столбец - строка, далее через пробел -
+            записанные последовательно значения из таблицы префиксов для данной строки
+            */
+            for (int i = 0; i < rowsCount; i++) {
+                String dataRow = tsvFile.readLine();
+                String[] rowSplit = dataRow.split(" ");
+                String text = rowSplit[0];
+                List<Integer> prefixesTable = new ArrayList<>();
+                for (int j = 1; j < rowSplit.length; j++) {
+                    prefixesTable.add(Integer.parseInt(rowSplit[j]));
+                }
+                result.add(new FindPrefixesTestCase(text, prefixesTable));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -148,7 +182,7 @@ public class BoyerMoore {
     }
 }
 
-class TestCase {
+class BoyerMooreTestCase {
 
     /**
      * текст (содержит пробелы)
@@ -165,7 +199,7 @@ class TestCase {
      */
     private final List<Integer> occurrencesIndices;
 
-    TestCase(String text, String pattern, List<Integer> occurrencesIndices) {
+    BoyerMooreTestCase(String text, String pattern, List<Integer> occurrencesIndices) {
         this.text = text;
         this.pattern = pattern;
         this.occurrencesIndices = Collections.unmodifiableList(occurrencesIndices);
@@ -181,5 +215,31 @@ class TestCase {
 
     public List<Integer> getOccurrencesIndices() {
         return occurrencesIndices;
+    }
+}
+
+class FindPrefixesTestCase {
+
+    /**
+     * Строка
+     */
+    private final String text;
+
+    /**
+     * Значения префиксов для данной строки
+     */
+    private final List<Integer> prefixesTable;
+
+    FindPrefixesTestCase(String text, List<Integer> prefixesTable) {
+        this.text = text;
+        this.prefixesTable = prefixesTable;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public List<Integer> getPrefixesTable() {
+        return Collections.unmodifiableList(prefixesTable);
     }
 }

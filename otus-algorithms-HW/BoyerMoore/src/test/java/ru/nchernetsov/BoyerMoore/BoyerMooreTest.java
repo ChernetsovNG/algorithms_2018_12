@@ -2,7 +2,9 @@ package ru.nchernetsov.BoyerMoore;
 
 import org.junit.Test;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.nchernetsov.BoyerMoore.BoyerMoore.*;
@@ -11,11 +13,11 @@ public class BoyerMooreTest {
 
     @Test
     public void boyerMooreHorspoolAlgTest1() {
-        List<TestCase> testCases = readTsvFileFromResources("string_matching_test_cases.tsv");
-        for (TestCase testCase : testCases) {
-            String text = testCase.getText();
-            String pattern = testCase.getPattern();
-            List<Integer> rightOccurrencesIndices = testCase.getOccurrencesIndices();
+        List<BoyerMooreTestCase> boyerMooreTestCases = readTestTsvFileFromResources("string_matching_test_cases.tsv");
+        for (BoyerMooreTestCase boyerMooreTestCase : boyerMooreTestCases) {
+            String text = boyerMooreTestCase.getText();
+            String pattern = boyerMooreTestCase.getPattern();
+            List<Integer> rightOccurrencesIndices = boyerMooreTestCase.getOccurrencesIndices();
             List<Integer> calcOccurrencesIndices = boyerMooreHorspoolAlg(text, pattern);
             assertThat(calcOccurrencesIndices).isEqualTo(rightOccurrencesIndices);
         }
@@ -23,8 +25,8 @@ public class BoyerMooreTest {
 
     @Test
     public void readTsvFileFromResourcesTest() {
-        List<TestCase> testCases = readTsvFileFromResources("string_matching_test_cases.tsv");
-        assertThat(testCases).hasSize(4776);
+        List<BoyerMooreTestCase> boyerMooreTestCases = readTestTsvFileFromResources("string_matching_test_cases.tsv");
+        assertThat(boyerMooreTestCases).hasSize(4776);
     }
 
     @Test
@@ -50,5 +52,11 @@ public class BoyerMooreTest {
         assertThat(row1).containsExactly(-1, -1, -1, -1, -1, -1, 5, 5);
         assertThat(row2).containsExactly(-1, 0, 0, 0, 0, 0, 0, 0);
         assertThat(row3).containsExactly(-1, -1, -1, 2, 3, 3, 3, 3);
+    }
+
+    @Test
+    public void readTestTxtFileFromResourcesTest() {
+        List<FindPrefixesTestCase> findPrefixesTestCases = readTestTxtFileFromResources("preprocess_test_cases.txt");
+        assertThat(findPrefixesTestCases).hasSize(21);
     }
 }
