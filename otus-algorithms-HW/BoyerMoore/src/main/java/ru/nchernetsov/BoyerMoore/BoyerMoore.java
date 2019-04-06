@@ -13,6 +13,74 @@ import java.util.stream.Collectors;
 public class BoyerMoore {
 
     /**
+     * Алгоритм Бойера-Мура-Хорспула для вычисления вхождений заданного шаблона в текст
+     *
+     * @param text    текст
+     * @param pattern шаблон
+     * @return список позиций, начиная с которых заданный шаблон входит в текст
+     */
+    public static List<Integer> boyerMooreHorspoolAlg(String text, String pattern) {
+        int patternLen = pattern.length();
+        int textLen = text.length();
+        Map<Character, Integer> alphabetMap = UNICODE_ALPHABET_MAP;
+
+        List<Integer> matches = new ArrayList<>();
+
+        int[][] badCharacterTable = badCharacterTable(pattern, alphabetMap);
+
+        int checkToIndex = textLen - patternLen + 1;
+
+        int shift = 0;
+        while (shift < checkToIndex) {
+            int j = patternLen - 1;
+            // сравниваем шаблон с конца с текстом
+            while (j >= 0 && text.charAt(shift + j) == pattern.charAt(j)) {
+                j--;
+            }
+            if (j < 0) {
+                matches.add(shift);
+                shift++;
+            } else {
+                int patternShift = badCharacterTable[alphabetMap.get(text.charAt(shift + j))][j];
+                shift += (j - patternShift);
+            }
+        }
+
+        return matches;
+    }
+
+    /**
+     * Функция для создания таблицы для работы эвристики "плохого символа"
+     *
+     * @param pattern     шаблон
+     * @param alphabetMap таблица, в которой для каждого символа используемого алфавита хранится его индекс
+     * @return подготовленная таблица
+     */
+    public static int[][] badCharacterTable(String pattern, Map<Character, Integer> alphabetMap) {
+        int patternLen = pattern.length();
+        int alphabetLen = alphabetMap.size();
+        if (patternLen == 0) {
+            return new int[0][alphabetLen];
+        }
+        int[] support = new int[alphabetLen];
+        for (int i = 0; i < support.length; i++) {
+            support[i] = -1;
+        }
+        int[][] table = new int[alphabetLen][1 + patternLen];
+        for (int i = 0; i < alphabetLen; i++) {
+            table[i][0] = -1;
+        }
+        for (int i = 0; i < patternLen; i++) {
+
+            support[alphabetMap.get(pattern.charAt(i))] = i;
+            for (int j = 0; j < alphabetLen; j++) {
+                table[j][i + 1] = support[j];
+            }
+        }
+        return table;
+    }
+
+    /**
      * Функция для чтения и разбора tsv-файла из ресурсов
      *
      * @param fileName имя файла
@@ -53,6 +121,18 @@ public class BoyerMoore {
         }
         return result;
     }
+
+    /**
+     * Для каждого символа Юникода - его индекс
+     */
+    private static final Map<Character, Integer> UNICODE_ALPHABET_MAP = new HashMap<>();
+
+    static {
+        for (int i = 0; i <= 65535; i++) {
+            char unicodeChar = (char) i;
+            UNICODE_ALPHABET_MAP.put(unicodeChar, i);
+        }
+    }
 }
 
 class TestCase {
@@ -71,7 +151,6 @@ class TestCase {
      * индексы вхождений паттерна в текст
      */
     private final List<Integer> occurrencesIndices;
-
 
     TestCase(String text, String pattern, List<Integer> occurrencesIndices) {
         this.text = text;
