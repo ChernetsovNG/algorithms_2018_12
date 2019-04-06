@@ -12,12 +12,7 @@ public class BoyerMooreTest {
     @Test
     public void boyerMooreHorspoolAlgTest1() {
         List<TestCase> testCases = readTsvFileFromResources("string_matching_test_cases.tsv");
-
-        // выбираем 100 случайных тестов
-        Collections.shuffle(testCases);
-        List<TestCase> randomTestCases = testCases.subList(0, 100);
-
-        for (TestCase testCase : randomTestCases) {
+        for (TestCase testCase : testCases) {
             String text = testCase.getText();
             String pattern = testCase.getPattern();
             List<Integer> rightOccurrencesIndices = testCase.getOccurrencesIndices();
