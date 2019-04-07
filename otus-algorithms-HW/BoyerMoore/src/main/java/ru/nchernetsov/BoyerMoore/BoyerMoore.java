@@ -1,11 +1,9 @@
 package ru.nchernetsov.BoyerMoore;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Алгоритм Бойера-Мура (-Хорспула)
@@ -89,79 +87,57 @@ public class BoyerMoore {
     }
 
     /**
-     * Функция для чтения и разбора tsv-файла из ресурсов
+     * Функция возвращает массив Z такой, что Z[i] содержит число, равное длине подстроки S[i:],
+     * котороая при этом является и (максимально большим) префиксом S.
+     * Если такого префикса нет, то Z[i] равен 0
      *
-     * @param fileName имя файла
-     * @return список разобранных тестовых примеров
+     * @param string строка
+     * @return массив Z
      */
-    public static List<BoyerMooreTestCase> readTestTsvFileFromResources(String fileName) {
-        List<BoyerMooreTestCase> result = new ArrayList<>();
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        try (InputStream inputStream = classloader.getResourceAsStream(fileName);
-             BufferedReader tsvFile = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
-            // в первой строке общее число записей
-            String firstRow = tsvFile.readLine();
-            int rowsCount = Integer.parseInt(firstRow);
-            /*
-            Первый столбец - текст (содержит пробелы),
-            после первого таба - столбец с паттерном (также может содержать пробелы),
-            в последнем столбце через пробел все вхождения паттерна в текст (позиции вхождений),
-            в том числе, перекрывающиеся частично. Если вхождений нет, столбец пуст
-             */
-            StringTokenizer st;
-            for (int i = 0; i < rowsCount; i++) {
-                String dataRow = tsvFile.readLine();
-                st = new StringTokenizer(dataRow, "\t");
-                String text = st.nextElement().toString();
-                String pattern = st.nextElement().toString();
-                List<Integer> occurrencesIndices = new ArrayList<>();
-                if (st.hasMoreElements()) {
-                    String occurrencesIndicesAsString = st.nextElement().toString();
-                    String[] occurrencesIndicesAsArray = occurrencesIndicesAsString.split(" ");
-                    occurrencesIndices = Arrays.stream(occurrencesIndicesAsArray)
-                        .map(Integer::parseInt)
-                        .collect(Collectors.toList());
-                }
-                result.add(new BoyerMooreTestCase(text, pattern, occurrencesIndices));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static int[] findPrefixes(String string) {
+        int strLen = string.length();
+
+        int[] Z = new int[strLen];
+        for (int i = 0; i < strLen; i++) {
+            Z[i] = maxCommonPrefixLen(string, i);
         }
-        return result;
+
+        return Z;
     }
 
     /**
-     * Функция для чтения и разбора txt-файла из ресурсов
+     * Функция находит длину наибольшего общего префикса заданной строки и строки,
+     * полученной из заданной как подстроки, начиная с заданного индекса
      *
-     * @param fileName имя файла
-     * @return список разобранных тестовых примеров
+     * @param string             строка
+     * @param substringFromIndex индекс для получения подстроки
+     * @return длину наибольшего общего префикса
      */
-    public static List<FindPrefixesTestCase> readTestTxtFileFromResources(String fileName) {
-        List<FindPrefixesTestCase> result = new ArrayList<>();
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        try (InputStream inputStream = classloader.getResourceAsStream(fileName);
-             BufferedReader tsvFile = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
-            // в первой строке общее число записей
-            String firstRow = tsvFile.readLine();
-            int rowsCount = Integer.parseInt(firstRow);
-            /*
-            Первая строка - количество записей, первый столбец - строка, далее через пробел -
-            записанные последовательно значения из таблицы префиксов для данной строки
-            */
-            for (int i = 0; i < rowsCount; i++) {
-                String dataRow = tsvFile.readLine();
-                String[] rowSplit = dataRow.split(" ");
-                String text = rowSplit[0];
-                List<Integer> prefixesTable = new ArrayList<>();
-                for (int j = 1; j < rowSplit.length; j++) {
-                    prefixesTable.add(Integer.parseInt(rowSplit[j]));
-                }
-                result.add(new FindPrefixesTestCase(text, prefixesTable));
+    private static int maxCommonPrefixLen(String string, int substringFromIndex) {
+        int minLength = string.length() - substringFromIndex;
+        for (int i = 0; i < minLength; i++) {
+            if (string.charAt(i) != string.charAt(i + substringFromIndex)) {
+                return i;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return result;
+        return minLength;
+    }
+
+    /**
+     * Функция находит наибольший общий префикс в двух заданных строках
+     *
+     * @param a первая строка
+     * @param b вторая строка
+     * @return наибольший общий префикс
+     */
+    private static String maxCommonPrefix(String a, String b) {
+        int minLength = Math.min(a.length(), b.length());
+        for (int i = 0; i < minLength; i++) {
+            if (a.charAt(i) != b.charAt(i)) {
+                return a.substring(0, i);
+            }
+        }
+        return a.substring(0, minLength);
     }
 
     private static void fillCachedAlphabet(String text) {
@@ -179,67 +155,5 @@ public class BoyerMoore {
             char unicodeChar = (char) i;
             cachedAlphabet.putIfAbsent(unicodeChar, i);
         }
-    }
-}
-
-class BoyerMooreTestCase {
-
-    /**
-     * текст (содержит пробелы)
-     */
-    private final String text;
-
-    /**
-     * паттерн (может содержать пробелы)
-     */
-    private final String pattern;
-
-    /**
-     * индексы вхождений паттерна в текст
-     */
-    private final List<Integer> occurrencesIndices;
-
-    BoyerMooreTestCase(String text, String pattern, List<Integer> occurrencesIndices) {
-        this.text = text;
-        this.pattern = pattern;
-        this.occurrencesIndices = Collections.unmodifiableList(occurrencesIndices);
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public String getPattern() {
-        return pattern;
-    }
-
-    public List<Integer> getOccurrencesIndices() {
-        return occurrencesIndices;
-    }
-}
-
-class FindPrefixesTestCase {
-
-    /**
-     * Строка
-     */
-    private final String text;
-
-    /**
-     * Значения префиксов для данной строки
-     */
-    private final List<Integer> prefixesTable;
-
-    FindPrefixesTestCase(String text, List<Integer> prefixesTable) {
-        this.text = text;
-        this.prefixesTable = prefixesTable;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public List<Integer> getPrefixesTable() {
-        return Collections.unmodifiableList(prefixesTable);
     }
 }

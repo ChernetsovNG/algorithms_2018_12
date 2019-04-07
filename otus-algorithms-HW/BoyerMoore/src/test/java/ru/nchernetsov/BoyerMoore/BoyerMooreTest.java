@@ -1,5 +1,6 @@
 package ru.nchernetsov.BoyerMoore;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -13,7 +14,7 @@ public class BoyerMooreTest {
 
     @Test
     public void boyerMooreHorspoolAlgTest1() {
-        List<BoyerMooreTestCase> boyerMooreTestCases = readTestTsvFileFromResources("string_matching_test_cases.tsv");
+        List<BoyerMooreTestCase> boyerMooreTestCases = TestUtils.readTestTsvFileFromResources("string_matching_test_cases.tsv");
         for (BoyerMooreTestCase boyerMooreTestCase : boyerMooreTestCases) {
             String text = boyerMooreTestCase.getText();
             String pattern = boyerMooreTestCase.getPattern();
@@ -21,12 +22,6 @@ public class BoyerMooreTest {
             List<Integer> calcOccurrencesIndices = boyerMooreHorspoolAlg(text, pattern);
             assertThat(calcOccurrencesIndices).isEqualTo(rightOccurrencesIndices);
         }
-    }
-
-    @Test
-    public void readTsvFileFromResourcesTest() {
-        List<BoyerMooreTestCase> boyerMooreTestCases = readTestTsvFileFromResources("string_matching_test_cases.tsv");
-        assertThat(boyerMooreTestCases).hasSize(4776);
     }
 
     @Test
@@ -55,8 +50,46 @@ public class BoyerMooreTest {
     }
 
     @Test
-    public void readTestTxtFileFromResourcesTest() {
-        List<FindPrefixesTestCase> findPrefixesTestCases = readTestTxtFileFromResources("preprocess_test_cases.txt");
-        assertThat(findPrefixesTestCases).hasSize(21);
+    public void findPrefixesTest1() {
+        int[] prefixes = findPrefixes("тоторо");
+        assertThat(prefixes).containsExactly(6, 0, 2, 0, 0, 0);
+    }
+
+    @Test
+    public void findPrefixesTest2() {
+        int[] prefixes = findPrefixes("ababab");
+        assertThat(prefixes).containsExactly(6, 0, 4, 0, 2, 0);
+    }
+
+    @Test
+    public void findPrefixesTest3() {
+        int[] prefixes = findPrefixes("aaa");
+        assertThat(prefixes).containsExactly(3, 2, 1);
+    }
+
+    @Test
+    @Ignore(value = "тест проходит, но выполняется очень долго")
+    public void findPrefixesTest4() {
+        List<FindPrefixesTestCase> findPrefixesTestCases = TestUtils.readTestTxtFileFromResources("preprocess_test_cases.txt");
+        int index = 1;
+        for (FindPrefixesTestCase testCase : findPrefixesTestCases) {
+            String string = testCase.getString();
+            int[] rightPrefixesTable = testCase.getPrefixesTable();
+            int[] calcPrefixesTable = findPrefixes(string);
+            assertThat(calcPrefixesTable).isEqualTo(rightPrefixesTable);
+            System.out.printf("Pass test %d\n", index);
+            index++;
+        }
+    }
+
+    @Test
+    @Ignore
+    public void findPrefixesTest5() {
+        List<FindPrefixesTestCase> findPrefixesTestCases = TestUtils.readTestTxtFileFromResources("preprocess_test_cases.txt");
+        FindPrefixesTestCase testCase17 = findPrefixesTestCases.get(17);
+        String string = testCase17.getString();
+        int[] rightPrefixesTable = testCase17.getPrefixesTable();
+        int[] calcPrefixesTable = findPrefixes(string);
+        assertThat(calcPrefixesTable).isEqualTo(rightPrefixesTable);
     }
 }
