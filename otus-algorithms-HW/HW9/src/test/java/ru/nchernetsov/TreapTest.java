@@ -53,4 +53,16 @@ public class TreapTest {
             treap = treap.remove(n);
         }
     }
+
+    @Test
+    public void treapTest3() {
+        Treap tree = new Treap(0, 0);
+        for (int i = 1; i < 1000; i++)
+            tree = tree.add(i);
+
+        for (int i = 0; i < 500; i++) {
+            System.out.println(i);
+            tree = tree.remove(i);
+        }
+    }
 }
