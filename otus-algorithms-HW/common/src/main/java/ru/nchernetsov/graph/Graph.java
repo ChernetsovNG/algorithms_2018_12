@@ -30,6 +30,19 @@ public class Graph {
         vertexCount = 0;
     }
 
+    // конструктор для графа, заданного вектором смежности
+    public Graph(int[][] A) {
+        this(A.length);
+        int vertexCountA = A.length;
+        for (int i = 0; i < vertexCountA; i++) {
+            addVertex(i);
+            for (int j = 0; j < A[i].length; j++) {
+                int adjVertexIndex = A[i][j];
+                addEdge(i, adjVertexIndex);
+            }
+        }
+    }
+
     public void addVertex(int index) {
         if (vertexCount >= maxVertexCount) {
             throw new IllegalArgumentException("Graph is full (maximum size = " + maxVertexCount + " reached)");
