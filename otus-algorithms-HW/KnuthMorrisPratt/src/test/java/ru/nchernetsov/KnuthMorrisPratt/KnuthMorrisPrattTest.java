@@ -74,6 +74,45 @@ public class KnuthMorrisPrattTest {
         assertThat(delta7.get('T')).isEqualTo(0);
     }
 
+    /**
+     * Из Википедии:
+     * https://neerc.ifmo.ru/wiki/index.php?title=Автомат_Кнута-Морриса-Пратта
+     */
+    @Test
+    public void knuthMorrisPrattStateMachineTest2() {
+        char[] alphabet = {'a', 'b'};
+        String pattern = "abaab";
+
+        StringStateMachine stringStateMachine = new StringStateMachine(alphabet, pattern);
+
+        // Проверяем таблицу переходов
+        Map<Integer, Map<Character, Integer>> delta = stringStateMachine.getDelta();
+        Map<Character, Integer> delta0 = delta.get(0);
+        Map<Character, Integer> delta1 = delta.get(1);
+        Map<Character, Integer> delta2 = delta.get(2);
+        Map<Character, Integer> delta3 = delta.get(3);
+        Map<Character, Integer> delta4 = delta.get(4);
+        Map<Character, Integer> delta5 = delta.get(5);
+
+        assertThat(delta0.get('a')).isEqualTo(1);
+        assertThat(delta0.get('b')).isEqualTo(0);
+
+        assertThat(delta1.get('a')).isEqualTo(1);
+        assertThat(delta1.get('b')).isEqualTo(2);
+
+        assertThat(delta2.get('a')).isEqualTo(3);
+        assertThat(delta2.get('b')).isEqualTo(0);
+
+        assertThat(delta3.get('a')).isEqualTo(4);
+        assertThat(delta3.get('b')).isEqualTo(2);
+
+        assertThat(delta4.get('a')).isEqualTo(1);
+        assertThat(delta4.get('b')).isEqualTo(5);
+
+        assertThat(delta5.get('a')).isEqualTo(3);
+        assertThat(delta5.get('b')).isEqualTo(0);
+    }
+
     @Test
     public void suffixFunctionSigmaTest1() {
         StringStateMachine stateMachine = new StringStateMachine(new char[]{'a', 'b'}, "abaab");
