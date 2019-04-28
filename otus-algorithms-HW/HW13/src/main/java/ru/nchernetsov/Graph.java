@@ -2,6 +2,7 @@ package ru.nchernetsov;
 
 import ru.nchernetsov.sort.Utils;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.Consumer;
 
@@ -145,41 +146,26 @@ public class Graph {
      * @return массив component, который каждой вершине сопоставляет номер её компонента связности
      * Компоненты связности нумеруются от единицы
      */
-    public int[] getStronglyConnectedComponentsArray() {
+    private int[] getStronglyConnectedComponentsArray() {
         // Пусть G — исходный граф (this), H — инвертированный граф
         Graph h = getInvertedGraph();
 
-        // В массиве ord будем хранить номера вершин в порядке окончания обработки
-        // поиском в глубину в графе G
-        int[] ord = new int[vertexCount];
-
-        final int[] j = {0};
-        for (int i = 0; i < vertexCount; i++) {
-            Vertex vertex = vertices[i];
-            if (!vertex.isVisited()) {
-                dfs(i, v -> {
-                    ord[j[0]] = v.getIndex();
-                    j[0] = j[0] + 1;
-                }, false);
-            }
-        }
+        // вычисляем реверсивный порядок обхода в инвертированном графе
+        DepthFirstOrder order = new DepthFirstOrder(h);
 
         // инициализируем массив результатов
         int[] components = new int[vertexCount];
-        for (int i = 0; i < vertexCount; i++) {
-            components[i] = -1;
-        }
+        Arrays.fill(components, -1);
 
         // индекс компонента связности
         final int[] componentNum = {1};
 
-        // по всем вершинам из списка ord[] в обратном порядке
-        for (int i = ord.length - 1; i >= 0; i--) {
-            int vertexIndex = ord[i];
+        // по всем вершинам в реверсивном порядке обхода
+        for (int vertexIndex : order.reversePost()) {
             // если вершина еще не находится ни в какой компоненте связности
             if (components[vertexIndex] == -1) {
-                h.dfs(vertexIndex, v -> components[v.getIndex()] = componentNum[0], false);
-                componentNum[0] = componentNum[0] + 1;
+                dfs(vertexIndex, v -> components[v.getIndex()] = componentNum[0], false);
+                componentNum[0] += 1;
             }
         }
 
@@ -192,5 +178,9 @@ public class Graph {
 
     public MyArrayList<MyArrayList<Integer>> getAdjVectorsList() {
         return adjVectorsList;
+    }
+
+    public int getVertexCount() {
+        return vertexCount;
     }
 }
