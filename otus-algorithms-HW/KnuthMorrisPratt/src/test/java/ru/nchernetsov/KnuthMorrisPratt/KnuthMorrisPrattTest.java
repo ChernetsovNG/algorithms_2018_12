@@ -5,38 +5,15 @@ import org.junit.Test;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.nchernetsov.KnuthMorrisPratt.KnuthMorrisPratt.knuthMorrisPrattStateMachine;
-import static ru.nchernetsov.KnuthMorrisPratt.KnuthMorrisPratt.suffixFunctionSigma;
 
 public class KnuthMorrisPrattTest {
-
-    @Test
-    public void suffixFunctionSigmaTest1() {
-        String str = "aaabaaa";
-        int sigma = suffixFunctionSigma(str);
-        assertThat(sigma).isEqualTo(3);
-    }
-
-    @Test
-    public void suffixFunctionSigmaTest2() {
-        String str = "aaaaaaa";
-        int sigma = suffixFunctionSigma(str);
-        assertThat(sigma).isEqualTo(6);
-    }
-
-    @Test
-    public void suffixFunctionSigmaTest3() {
-        String str = "abcdabcd";
-        int sigma = suffixFunctionSigma(str);
-        assertThat(sigma).isEqualTo(4);
-    }
 
     @Test
     public void knuthMorrisPrattStateMachineTest1() {
         char[] alphabet = {'A', 'C', 'G', 'T'};
         String pattern = "GAGAGTT";
 
-        StringStateMachine stringStateMachine = knuthMorrisPrattStateMachine(alphabet, pattern);
+        StringStateMachine stringStateMachine = new StringStateMachine(alphabet, pattern);
 
         assertThat(stringStateMachine.getPattern()).isEqualTo("GAGAGTT");
         assertThat(stringStateMachine.getQ()).hasSize(8);
@@ -88,12 +65,40 @@ public class KnuthMorrisPrattTest {
 
         assertThat(delta6.get('A')).isEqualTo(0);
         assertThat(delta6.get('C')).isEqualTo(0);
-        assertThat(delta6.get('G')).isEqualTo(0);
+        assertThat(delta6.get('G')).isEqualTo(1);
         assertThat(delta6.get('T')).isEqualTo(7);
 
-        assertThat(delta7.get('A')).isEqualTo(1);
+        assertThat(delta7.get('A')).isEqualTo(0);
         assertThat(delta7.get('C')).isEqualTo(0);
-        assertThat(delta7.get('G')).isEqualTo(0);
+        assertThat(delta7.get('G')).isEqualTo(1);
         assertThat(delta7.get('T')).isEqualTo(0);
+    }
+
+    @Test
+    public void suffixFunctionSigmaTest1() {
+        StringStateMachine stateMachine = new StringStateMachine(new char[]{'a', 'b'}, "abaab");
+        int sigma = stateMachine.suffixFunction("aba");
+        assertThat(sigma).isEqualTo(3);
+    }
+
+    @Test
+    public void suffixFunctionSigmaTest2() {
+        StringStateMachine stateMachine = new StringStateMachine(new char[]{'a', 'b'}, "abaab");
+        int sigma = stateMachine.suffixFunction("bb");
+        assertThat(sigma).isEqualTo(0);
+    }
+
+    @Test
+    public void suffixFunctionSigmaTest3() {
+        StringStateMachine stateMachine = new StringStateMachine(new char[]{'a', 'b'}, "abaab");
+        int sigma = stateMachine.suffixFunction("aaab");
+        assertThat(sigma).isEqualTo(2);
+    }
+
+    @Test
+    public void suffixFunctionSigmaTest4() {
+        StringStateMachine stateMachine = new StringStateMachine(new char[]{'A', 'C', 'G', 'T'}, "GAGAGTT");
+        int sigma = stateMachine.suffixFunction("G");
+        assertThat(sigma).isEqualTo(1);
     }
 }

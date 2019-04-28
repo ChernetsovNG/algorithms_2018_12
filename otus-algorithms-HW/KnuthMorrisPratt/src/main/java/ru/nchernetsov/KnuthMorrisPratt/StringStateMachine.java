@@ -81,23 +81,11 @@ public class StringStateMachine {
         int m = pattern.length();
         for (int q = 0; q <= m; q++) {
             for (char a : Sigma) {  // каждый символ алфавита
-                int k = Math.min(m + 1, q + 2);
-                do {
-                    k -= 1;
-                } while (isPrefix(k, q, a));
+                int sigma = suffixFunction(pattern.substring(0, q) + a);
                 delta.putIfAbsent(q, new HashMap<>());
-                delta.get(q).put(a, k);
+                delta.get(q).put(a, sigma);
             }
         }
-    }
-
-    private boolean isPrefix(int k, int q, char a) {
-        if (k < -1) {
-            return false;
-        }
-        String Pk = pattern.substring(0, k + 1);
-        String Pq = pattern.substring(0, q + 1) + a;
-        return Pq.startsWith(Pk);
     }
 
     /**
@@ -139,5 +127,33 @@ public class StringStateMachine {
 
     public int get_q() {
         return q;
+    }
+
+    /**
+     * Суффикс-функция, которая для строки x вычисляет длину максимального
+     * суффикса x, являющегося префиксом pattern
+     *
+     * @param x строка
+     * @return sigma(x)
+     */
+    public int suffixFunction(String x) {
+        if (x.isEmpty()) {
+            return 0;
+        }
+
+        int result = 0;
+
+        int xLen = x.length();
+        int j = xLen - 1;
+
+        while (j >= 0) {
+            String suffix = x.substring(j, xLen);
+            if (pattern.startsWith(suffix)) {
+                result = suffix.length();
+            }
+            j--;
+        }
+
+        return result;
     }
 }
