@@ -53,16 +53,16 @@ public class Treap {
      */
     public Treap add(int x) {
         Pair<Treap, Treap> thisSplit = this.split(x);
-        Treap left = thisSplit.getKey();
-        Treap right = thisSplit.getValue();
+        Treap left = thisSplit.getFirst();
+        Treap right = thisSplit.getSecond();
         Treap m = new Treap(x, new Random().nextInt());
         return merge(merge(left, m), right);
     }
 
     public Treap add(int x, int y) {
         Pair<Treap, Treap> thisSplit = this.split(x);
-        Treap left = thisSplit.getKey();
-        Treap right = thisSplit.getValue();
+        Treap left = thisSplit.getFirst();
+        Treap right = thisSplit.getSecond();
         Treap m = new Treap(x, y);
         return merge(merge(left, m), right);
     }
@@ -75,10 +75,10 @@ public class Treap {
      */
     public Treap remove(int x) {
         Pair<Treap, Treap> thisSplit = this.split(x - 1);
-        Treap l = thisSplit.getKey();
-        Treap r = thisSplit.getValue();
+        Treap l = thisSplit.getFirst();
+        Treap r = thisSplit.getSecond();
         Pair<Treap, Treap> rightSplit = r.split(x);
-        r = rightSplit.getValue();
+        r = rightSplit.getSecond();
         return merge(l, r);
     }
 
@@ -151,8 +151,8 @@ public class Treap {
                 R = null;
             } else {
                 Pair<Treap, Treap> rightSplit = right.split(x);
-                newTree = rightSplit.getKey();
-                R = rightSplit.getValue();
+                newTree = rightSplit.getFirst();
+                R = rightSplit.getSecond();
             }
             L = new Treap(this.x, this.y, left, newTree);
             L.recalcSize();
@@ -161,8 +161,8 @@ public class Treap {
                 L = null;
             } else {
                 Pair<Treap, Treap> leftSplit = left.split(x);
-                L = leftSplit.getKey();
-                newTree = leftSplit.getValue();
+                L = leftSplit.getFirst();
+                newTree = leftSplit.getSecond();
             }
             R = new Treap(this.x, this.y, newTree, right);
             R.recalcSize();

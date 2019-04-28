@@ -1,25 +1,25 @@
 package ru.nchernetsov.common;
 
-public class Pair<K, V> {
+public class Pair<F, S> {
 
-    private final K key;
+    private final F first;
 
-    private final V value;
+    private final S second;
 
-    public Pair(K key, V value) {
-        this.key = key;
-        this.value = value;
+    private Pair(F first, S second) {
+        this.first = first;
+        this.second = second;
     }
 
-    public K getKey() {
-        return key;
+    public F getFirst() {
+        return first;
     }
 
-    public V getValue() {
-        return value;
+    public S getSecond() {
+        return second;
     }
 
-    public static <K, V> Pair<K, V> of(K key, V value) {
-        return new Pair<>(key, value);
+    public static <F, S> Pair<F, S> of(F first, S second) {
+        return new Pair<>(first, second);
     }
 }

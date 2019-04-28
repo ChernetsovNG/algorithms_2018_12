@@ -63,8 +63,8 @@ public class SelectTest {
 
         Pair<long[], long[]> bottomUpperParts = partition(array, 2);
 
-        long[] bottomPart = bottomUpperParts.getKey();
-        long[] upperPart = bottomUpperParts.getValue();
+        long[] bottomPart = bottomUpperParts.getFirst();
+        long[] upperPart = bottomUpperParts.getSecond();
 
         assertThat(bottomPart).containsExactly(1);
         assertThat(upperPart).containsExactly(3, 4, 5, 6, 7, 8, 9, 10);
