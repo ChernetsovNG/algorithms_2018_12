@@ -1,6 +1,8 @@
 package ru.nchernetsov.KnuthMorrisPratt;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,6 +72,26 @@ public class StringStateMachine {
 
         // вычисление функции (таблицы) перехода
         computeDelta();
+    }
+
+    /**
+     * Функция находит вхождения паттерна в заданный текст
+     *
+     * @param text текст
+     * @return список позиций вхождения
+     */
+    public List<Integer> matcher(String text) {
+        int m = pattern.length();
+        int n = text.length();
+        List<Integer> matches = new ArrayList<>();
+        int q = 0;  // начальное состояние
+        for (int i = 0; i < n; i++) {
+            q = delta.get(q).get(text.charAt(i));
+            if (q == m) {
+                matches.add(i - m + 1);
+            }
+        }
+        return matches;
     }
 
     /**

@@ -2,6 +2,7 @@ package ru.nchernetsov.KnuthMorrisPratt;
 
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class KnuthMorrisPrattTest {
 
     @Test
-    public void knuthMorrisPrattStateMachineTest1() {
+    public void computeDeltaTest1() {
         char[] alphabet = {'A', 'C', 'G', 'T'};
         String pattern = "GAGAGTT";
 
@@ -79,7 +80,7 @@ public class KnuthMorrisPrattTest {
      * https://neerc.ifmo.ru/wiki/index.php?title=Автомат_Кнута-Морриса-Пратта
      */
     @Test
-    public void knuthMorrisPrattStateMachineTest2() {
+    public void computeDeltaTest2() {
         char[] alphabet = {'a', 'b'};
         String pattern = "abaab";
 
@@ -111,6 +112,17 @@ public class KnuthMorrisPrattTest {
 
         assertThat(delta5.get('a')).isEqualTo(3);
         assertThat(delta5.get('b')).isEqualTo(0);
+    }
+
+    @Test
+    public void findMatchesTest1() {
+        String text = "AABAACAADAABAABA";
+        String pattern = "AABA";
+        char[] alphabet = {'A', 'B', 'C', 'D'};
+        StringStateMachine stringStateMachine = new StringStateMachine(alphabet, pattern);
+        List<Integer> matches = stringStateMachine.matcher(text);
+        assertThat(matches).hasSize(3);
+        assertThat(matches).containsExactly(0, 9, 12);
     }
 
     @Test
