@@ -13,4 +13,11 @@ public class AhoCorasickTest {
         String[] words = {"he", "she", "his", "hers"};
         ahoCorasickAlg("uphers", words);
     }
+
+    @Test
+    @Ignore
+    public void ahoCorasickAlgTest2() {
+        String[] words = {"ab", "about", "at", "ate", "be", "bed", "edge", "get"};
+        ahoCorasickAlg("abedgetab", words);
+    }
 }

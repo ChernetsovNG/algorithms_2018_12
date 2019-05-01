@@ -97,9 +97,9 @@ public class Trie {
     private TrieNode getLink(TrieNode v, char c) {
         if (!v.go.containsKey(c)) {  // если переход по символу c ещё не вычислен
             if (v.children.containsKey(c)) {
-                v.go.put(c, v.children.get(c));
+                v.go.put(c, v.children.get(c));  // переход вниз по дереву
             } else if (v == root) {
-                v.go.put(c, root);
+                v.go.put(c, root);  // переход к корню
             } else {
                 v.go.put(c, getLink(getSuffixLink(v), c));
             }
