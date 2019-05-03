@@ -65,4 +65,50 @@ public final class GraphUtils {
 
         return adjMatrix;
     }
+
+    public static double[][] convertAdjVectorsToDoubleWeightAdjMatrix(int vertexCount, MyArrayList<MyArrayList<Pair<Integer, Double>>> adjVectorsList) {
+        double[][] adjMatrix = new double[vertexCount][vertexCount];
+
+        // вначале заполняем все элементы бесконечными расстояниями
+        for (int i = 0; i < vertexCount; i++) {
+            for (int j = 0; j < vertexCount; j++) {
+                adjMatrix[i][j] = INFINITY;
+            }
+        }
+
+        // диагональные элементы - нули
+        for (int i = 0; i < vertexCount; i++) {
+            adjMatrix[i][i] = 0.0;
+        }
+
+        for (int vertexIndex = 0; vertexIndex < adjVectorsList.size(); vertexIndex++) {
+            MyArrayList<Pair<Integer, Double>> adjVertices = adjVectorsList.get(vertexIndex);
+            for (Pair<Integer, Double> adjVertexIndexWeight : adjVertices) {
+                Integer adjVertexIndex = adjVertexIndexWeight.getFirst();
+                Double adjVertexPathWeight = adjVertexIndexWeight.getSecond();
+                adjMatrix[vertexIndex][adjVertexIndex] = adjVertexPathWeight;
+            }
+        }
+
+        return adjMatrix;
+    }
+
+    /**
+     * Вычисление расстояния между двумя точками на плоскости
+     *
+     * @param vertex1 точка 1
+     * @param vertex2 точка 2
+     * @return расстояние
+     */
+    public static double distance(VertexPoint2D vertex1, VertexPoint2D vertex2) {
+        double x1 = vertex1.getX();
+        double y1 = vertex1.getY();
+        double x2 = vertex2.getX();
+        double y2 = vertex2.getY();
+
+        double x2x1diff = x2 - x1;
+        double y2y1diff = y2 - y1;
+
+        return Math.sqrt(x2x1diff * x2x1diff + y2y1diff * y2y1diff);
+    }
 }

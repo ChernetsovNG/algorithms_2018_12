@@ -48,4 +48,15 @@ public class MaxHeap<E extends Comparable<E>> extends Heap<E> {
         }
         heapArray[index] = top;  // index <- корень
     }
+
+    @Override
+    void siftUp(int index) {
+        int i = index;
+        int parent = (i - 1) / 2;
+        while (i > 0 && heapArray[parent].compareTo(heapArray[i]) < 0) {
+            swap(i, parent);
+            i = parent;
+            parent = (i - 1) / 2;
+        }
+    }
 }

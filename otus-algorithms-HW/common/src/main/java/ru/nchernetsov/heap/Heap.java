@@ -27,6 +27,26 @@ public abstract class Heap<E extends Comparable<E>> {
     }
 
     /**
+     * Добавить новый элемент в пирамиду
+     *
+     * @param element
+     */
+    public void add(E element) {
+        if (currentSize >= heapArray.length) {
+            throw new IllegalStateException("Heap array is full");
+        }
+        insertAt(currentSize, element);
+        incrementSize();
+        siftUp(currentSize - 1);
+    }
+
+    public void swap(int i, int j) {
+        E temp = heapArray[i];
+        heapArray[i] = heapArray[j];
+        heapArray[j] = temp;
+    }
+
+    /**
      * Заполнить пирамиду данными из массива
      *
      * @param heap  пирамида
@@ -52,6 +72,13 @@ public abstract class Heap<E extends Comparable<E>> {
      */
     abstract void drown(int index);
 
+    /**
+     * Дать "всплыть" элементу по заданному индексу
+     *
+     * @param index индекс
+     */
+    abstract void siftUp(int index);
+
     void insertAt(int index, E newNode) {
         heapArray[index] = newNode;
     }
@@ -62,5 +89,9 @@ public abstract class Heap<E extends Comparable<E>> {
 
     public int size() {
         return currentSize;
+    }
+
+    public boolean isNotEmpty() {
+        return currentSize > 0;
     }
 }
