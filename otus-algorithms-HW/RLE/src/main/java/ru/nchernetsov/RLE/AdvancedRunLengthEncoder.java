@@ -9,93 +9,83 @@ import java.util.Objects;
 import static ru.nchernetsov.Utils.splitArray;
 
 /**
- * Алгоритм кодирования по длинам серий
+ * Улучшенный алгоритм кодирования по длинам серий
  */
-public class RunLengthEncoder implements Encoder {
+public class AdvancedRunLengthEncoder implements Encoder {
 
-    private final RLEType type;
-
-    public RunLengthEncoder(RLEType type) {
-        this.type = type;
-    }
+    private State state;
 
     @Override
     public byte[] encode(byte[] bytes) {
-        switch (type) {
-            case SIMPLE:
-                return simpleEncode(bytes);
-            case ADVANCED:
-                return advancedEncode(bytes);
-            default:
-                throw new IllegalStateException();
-        }
-    }
-
-    @Override
-    public byte[] decode(byte[] bytes) {
-        switch (type) {
-            case SIMPLE:
-                return simpleDecode(bytes);
-            case ADVANCED:
-                return advancedDecode(bytes);
-            default:
-                throw new IllegalStateException();
-        }
-    }
-
-    // алгоритмы кодирования
-
-    private byte[] simpleEncode(byte[] bytes) {
-        ByteArrayOutputStream dest = new ByteArrayOutputStream();
-        byte lastByte = bytes[0];
-        int matchCount = 1;
-        for (int i = 1; i < bytes.length; i++) {
-            byte thisByte = bytes[i];
-            if (lastByte == thisByte && matchCount < Byte.MAX_VALUE) {
-                matchCount++;
-            } else {
-                dest.write((byte) matchCount);
-                dest.write(lastByte);
-                matchCount = 1;
-                lastByte = thisByte;
-            }
-        }
-        dest.write((byte) matchCount);
-        dest.write(lastByte);
-        return dest.toByteArray();
-    }
-
-    private byte[] advancedEncode(byte[] bytes) {
         ByteArrayOutputStream lastSeries = new ByteArrayOutputStream();
         ByteArrayOutputStream result = new ByteArrayOutputStream();
 
         byte lastByte = bytes[0];
         lastSeries.write(lastByte);
 
+        if (bytes.length < 2) {
+            result.write(-1);
+            result.write(bytes[0]);
+            return new byte[]{-1, bytes[0]};
+        }
+
         // определяем начальное состояние, сравнивая 2 первых байта
         byte secondByte = bytes[1];
-        State state = secondByte == lastByte ? State.REPEAT : State.NON_REPEAT;
+        this.state = secondByte == lastByte ? State.REPEAT : State.NON_REPEAT;
 
         for (int i = 1; i < bytes.length; i++) {
             byte thisByte = bytes[i];
             if (thisByte == lastByte) {
-                state = thisByteEqualsPrevious(lastSeries, result, state, thisByte);
+                thisByteEqualsPrevious(lastSeries, result, thisByte);
             } else {
-                state = thisByteNotEqualsPrevious(lastSeries, result, state, thisByte);
+                thisByteNotEqualsPrevious(lastSeries, result, thisByte);
             }
             lastByte = thisByte;
         }
 
-        // дозаписываем то, что осталось
+        // дописываем то, что осталось
         byte[] remainingBytes = lastSeries.toByteArray();
         if (remainingBytes.length > 0) {
-            writeRemainingBytes(result, state, remainingBytes);
+            switch (state) {
+                case NON_REPEAT:
+                    writeNonRepeatSeries(remainingBytes, result);
+                    break;
+                case REPEAT:
+                    writeRepeatSeries(remainingBytes, result);
+                    break;
+            }
         }
 
         return result.toByteArray();
     }
 
-    private State thisByteEqualsPrevious(ByteArrayOutputStream lastSeries, ByteArrayOutputStream result, State state, byte thisByte) {
+    @Override
+    public byte[] decode(byte[] bytes) {
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        for (int i = 0; i < bytes.length - 1; ) {
+            byte thisByte = bytes[i];
+            if (thisByte < 0) {  // неповторяющаяся серия
+                int len = thisByte * -1;
+                for (int j = 0; j < len; j++) {
+                    byte nonRepeatSeriesByte = bytes[i + 1 + j];
+                    result.write(nonRepeatSeriesByte);
+                }
+                i += (len + 1);
+            } else {  // повторяющаяся серия
+                int len = thisByte;            // количество повторений
+                byte lastByte = bytes[i + 1];  // повторяющийся байт
+                for (int j = 0; j < len; j++) {
+                    result.write(lastByte);
+                }
+                i += 2;
+            }
+        }
+        return result.toByteArray();
+    }
+
+    // PRIVATE section
+
+    private void thisByteEqualsPrevious(ByteArrayOutputStream lastSeries, ByteArrayOutputStream result, byte thisByte) {
         if (state.equals(State.NON_REPEAT)) {  // началась повторяющаяся серия после неповторяющейся
             byte[] lastBytes = lastSeries.toByteArray();
             // все байты, кроме последнего, образуют неповторяющуюся серию
@@ -112,10 +102,9 @@ public class RunLengthEncoder implements Encoder {
         } else if (state.equals(State.REPEAT)) {  // продолжается повторяющаяся серия
             lastSeries.write(thisByte);
         }
-        return state;
     }
 
-    private State thisByteNotEqualsPrevious(ByteArrayOutputStream lastSeries, ByteArrayOutputStream result, State state, byte thisByte) {
+    private void thisByteNotEqualsPrevious(ByteArrayOutputStream lastSeries, ByteArrayOutputStream result, byte thisByte) {
         if (state.equals(State.NON_REPEAT)) {  // продолжается неповторяющаяся серия
             lastSeries.write(thisByte);
         } else if (state.equals(State.REPEAT)) {  // закончилась повторяющаяся серия
@@ -127,7 +116,6 @@ public class RunLengthEncoder implements Encoder {
             lastSeries.write(thisByte);
             state = State.NON_REPEAT;
         }
-        return state;
     }
 
     // сохраняем неповторяющуюся серию
@@ -160,54 +148,6 @@ public class RunLengthEncoder implements Encoder {
             result.write(repeatSeriesLen);
             result.write(repeatSeries[0]);
         }
-    }
-
-    private void writeRemainingBytes(ByteArrayOutputStream dest, State state, byte[] remainingBytes) {
-        switch (state) {
-            case NON_REPEAT:
-                writeNonRepeatSeries(remainingBytes, dest);
-                break;
-            case REPEAT:
-                writeRepeatSeries(remainingBytes, dest);
-                break;
-        }
-    }
-
-    // алгоритмы декодирования
-
-    private byte[] simpleDecode(byte[] bytes) {
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        for (int i = 0; i < bytes.length - 1; i += 2) {
-            byte matchCount = bytes[i];    // количество повторений
-            byte lastByte = bytes[i + 1];  // повторяющийся байт
-            for (int j = 0; j < matchCount; j++) {
-                result.write(lastByte);
-            }
-        }
-        return result.toByteArray();
-    }
-
-    private byte[] advancedDecode(byte[] bytes) {
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        for (int i = 0; i < bytes.length - 1; ) {
-            byte thisByte = bytes[i];
-            if (thisByte < 0) {  // неповторяющаяся серия
-                int len = thisByte * -1;
-                for (int j = 0; j < len; j++) {
-                    byte nonRepeatSeriesByte = bytes[i + 1 + j];
-                    result.write(nonRepeatSeriesByte);
-                }
-                i += (len + 1);
-            } else {  // повторяющаяся серия
-                int len = thisByte;            // количество повторений
-                byte lastByte = bytes[i + 1];  // повторяющийся байт
-                for (int j = 0; j < len; j++) {
-                    result.write(lastByte);
-                }
-                i += 2;
-            }
-        }
-        return result.toByteArray();
     }
 
     private enum State {
