@@ -126,11 +126,11 @@ public class AdvancedRunLengthEncoder implements Encoder {
             byte[][] nonRepeatSeriesSplit = splitArray(nonRepeatSeries, Byte.MAX_VALUE);
             for (byte[] chunk : Objects.requireNonNull(nonRepeatSeriesSplit)) {
                 result.write(-1 * chunk.length);
-                result.writeBytes(chunk);
+                result.write(chunk, 0, chunk.length);
             }
         } else {
             result.write(-1 * nonRepeatSeriesLen);
-            result.writeBytes(nonRepeatSeries);
+            result.write(nonRepeatSeries, 0, nonRepeatSeries.length);
         }
     }
 
