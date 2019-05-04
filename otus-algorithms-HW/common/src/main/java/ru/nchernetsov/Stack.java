@@ -1,9 +1,11 @@
 package ru.nchernetsov;
 
+import java.util.Iterator;
+
 /**
  * Стек на базе массива
  */
-public class Stack<E> {
+public class Stack<E> implements Iterable<E> {
 
     private MyArrayList<E> stackArray;
 
@@ -37,5 +39,23 @@ public class Stack<E> {
 
     public boolean isEmpty() {
         return stackArray.size() == 0;
+    }
+
+
+    @Override
+    public Iterator<E> iterator() {
+        return new Iterator<E>() {
+            private int index = stackArray.size() - 1;
+
+            @Override
+            public boolean hasNext() {
+                return index >= 0;
+            }
+
+            @Override
+            public E next() {
+                return stackArray.get(index--);
+            }
+        };
     }
 }

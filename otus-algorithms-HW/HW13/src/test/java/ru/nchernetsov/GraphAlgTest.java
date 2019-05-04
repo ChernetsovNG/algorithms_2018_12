@@ -107,15 +107,73 @@ public class GraphAlgTest {
         MyArrayList<Integer> component3 = stronglyConnectedComponents.get(2);
         MyArrayList<Integer> component4 = stronglyConnectedComponents.get(3);
 
-        assertThat(component1).hasSize(1);
+        assertThat(component1).hasSize(3);
         assertThat(component2).hasSize(4);
-        assertThat(component3).hasSize(3);
+        assertThat(component3).hasSize(1);
         assertThat(component4).hasSize(3);
 
-        assertThat(component1).containsExactlyInAnyOrder(10);
+        assertThat(component1).containsExactlyInAnyOrder(3, 4, 5);
         assertThat(component2).containsExactlyInAnyOrder(6, 7, 8, 9);
-        assertThat(component3).containsExactlyInAnyOrder(0, 1, 2);
-        assertThat(component4).containsExactlyInAnyOrder(3, 4, 5);
+        assertThat(component3).containsExactlyInAnyOrder(10);
+        assertThat(component4).containsExactlyInAnyOrder(0, 1, 2);
+    }
+
+    @Test
+    public void getStronglyConnectedComponentsTest2() {
+        // Граф показан на рисунке test/resources/test_graph.jpg
+        final int[][] A2 = new int[][]{
+            {},         // вершина 0
+            {2},        // 1
+            {3, 12},    // 2
+            {6, 4},     // 3
+            {5},        // 4
+            {4, 8},     // 5
+            {7},        // 6
+            {8},        // 7
+            {9, 6, 11}, // 8
+            {10},       // 9
+            {},         // 10
+            {9, 12},    // 11
+            {13},       // 12
+            {14},       // 13
+            {11},       // 14
+        };
+
+        DirectedGraph graph = new DirectedGraph(A2);
+
+        MyArrayList<MyArrayList<Integer>> stronglyConnectedComponents = getStronglyConnectedComponents(graph);
+
+        assertThat(stronglyConnectedComponents).hasSize(9);
+
+        MyArrayList<Integer> component1 = stronglyConnectedComponents.get(0);
+        MyArrayList<Integer> component2 = stronglyConnectedComponents.get(1);
+        MyArrayList<Integer> component3 = stronglyConnectedComponents.get(2);
+        MyArrayList<Integer> component4 = stronglyConnectedComponents.get(3);
+        MyArrayList<Integer> component5 = stronglyConnectedComponents.get(4);
+        MyArrayList<Integer> component6 = stronglyConnectedComponents.get(5);
+        MyArrayList<Integer> component7 = stronglyConnectedComponents.get(6);
+        MyArrayList<Integer> component8 = stronglyConnectedComponents.get(7);
+        MyArrayList<Integer> component9 = stronglyConnectedComponents.get(8);
+
+        assertThat(component1).hasSize(1);
+        assertThat(component2).hasSize(1);
+        assertThat(component3).hasSize(4);
+        assertThat(component4).hasSize(3);
+        assertThat(component5).hasSize(2);
+        assertThat(component6).hasSize(1);
+        assertThat(component7).hasSize(1);
+        assertThat(component8).hasSize(1);
+        assertThat(component9).hasSize(1);
+
+        assertThat(component1).containsExactlyInAnyOrder(10);
+        assertThat(component2).containsExactlyInAnyOrder(9);
+        assertThat(component3).containsExactlyInAnyOrder(11, 12, 13, 14);
+        assertThat(component4).containsExactlyInAnyOrder(6, 7, 8);
+        assertThat(component5).containsExactlyInAnyOrder(4, 5);
+        assertThat(component6).containsExactlyInAnyOrder(3);
+        assertThat(component7).containsExactlyInAnyOrder(2);
+        assertThat(component8).containsExactlyInAnyOrder(1);
+        assertThat(component9).containsExactlyInAnyOrder(0);
     }
 
     private DirectedGraph createTestGraph() {
