@@ -50,6 +50,7 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
             elements.put(key, element);
 
             if (lifeTimeMs != 0) {
+                // планируем задачу на выселение элемента через lifeTimeMs
                 executorService.schedule(getTimerTask(key), lifeTimeMs, TimeUnit.MILLISECONDS);
             }
         }
