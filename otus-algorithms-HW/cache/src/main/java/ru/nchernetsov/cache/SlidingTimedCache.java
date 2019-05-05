@@ -55,12 +55,26 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public Element<K, V> get(K key) {
+    public void put(K key, V value) {
+        put(Element.of(key, value));
+    }
+
+    @Override
+    public Element<K, V> getElement(K key) {
         Element<K, V> element = elements.get(key);
         if (element != null) {
             element.setAccessTime();
         }
         return element;
+    }
+
+    @Override
+    public V get(K key) {
+        Element<K, V> element = getElement(key);
+        if (element != null) {
+            return element.getValue();
+        }
+        return null;
     }
 
     @Override

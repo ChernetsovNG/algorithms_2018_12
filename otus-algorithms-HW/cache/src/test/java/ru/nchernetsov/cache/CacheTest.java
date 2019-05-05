@@ -53,12 +53,12 @@ public class CacheTest {
         cache.put(Element.of(5, "five"));
 
         // проверяем, что элемент можно получить из кеша
-        Element<Integer, String> element1 = cache.get(1);
+        Element<Integer, String> element1 = cache.getElement(1);
 
         assertThat(element1.getKey()).isEqualTo(1);
         assertThat(element1.getValue()).isEqualTo("one");
 
-        Element<Integer, String> element10 = cache.get(10);
+        Element<Integer, String> element10 = cache.getElement(10);
 
         assertThat(element10).isNull();
 
@@ -89,7 +89,7 @@ public class CacheTest {
         allElements = cache.getAll();
         assertThat(allElements).hasSize(4);
 
-        assertThat(cache.get(3)).isNull();
+        assertThat(cache.getElement(3)).isNull();
     }
 
     @Test

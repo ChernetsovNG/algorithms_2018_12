@@ -14,13 +14,17 @@ public interface Cache<K, V> {
      */
     void put(Element<K, V> element);
 
+    void put(K key, V value);
+
     /**
      * Получить элемент из кеша по ключу
      *
      * @param key ключ
      * @return элемент из кеша
      */
-    Element<K, V> get(K key);
+    Element<K, V> getElement(K key);
+
+    V get(K key);
 
     /**
      * Удалить элемент по ключу
@@ -41,6 +45,11 @@ public interface Cache<K, V> {
      */
     void dispose();
 
+    /**
+     * Текущее время, UNIX-time, в мс
+     *
+     * @return текущее время
+     */
     static long getCurrentTime() {
         return LocalDateTime.now(Clock.systemUTC()).toInstant(ZoneOffset.UTC).toEpochMilli();
     }
