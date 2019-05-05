@@ -1,6 +1,5 @@
 package ru.nchernetsov.cache;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,7 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
 
     private static final int TIME_THRESHOLD_MS = 5;
 
-    private final Map<K, Element<K, V>> elements = Collections.synchronizedMap(new LinkedHashMap<>());
+    private final Map<K, Element<K, V>> elements = new LinkedHashMap<>();
 
     private final ScheduledExecutorService executorService;
 
@@ -40,17 +39,19 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
 
     @Override
     public void put(Element<K, V> element) {
-        // если места уже нет, то выселяем первый добавленный элемент
-        if (elements.size() == maxElements) {
-            K firstKey = elements.keySet().iterator().next();
-            elements.remove(firstKey);
-        }
+        synchronized (elements) {
+            // если места уже нет, то выселяем первый добавленный элемент
+            if (elements.size() == maxElements) {
+                K firstKey = elements.keySet().iterator().next();
+                elements.remove(firstKey);
+            }
 
-        K key = element.getKey();
-        elements.put(key, element);
+            K key = element.getKey();
+            elements.put(key, element);
 
-        if (lifeTimeMs != 0) {
-            executorService.schedule(getTimerTask(key), lifeTimeMs, TimeUnit.MILLISECONDS);
+            if (lifeTimeMs != 0) {
+                executorService.schedule(getTimerTask(key), lifeTimeMs, TimeUnit.MILLISECONDS);
+            }
         }
     }
 
@@ -79,7 +80,9 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
 
     @Override
     public void removeElement(K key) {
-        elements.remove(key);
+        synchronized (elements) {
+            elements.remove(key);
+        }
     }
 
     @Override
@@ -91,7 +94,9 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
 
     @Override
     public void dispose() {
-        elements.clear();
+        synchronized (elements) {
+            elements.clear();
+        }
         executorService.shutdown();
     }
 
