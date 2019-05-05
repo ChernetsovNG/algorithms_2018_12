@@ -43,9 +43,7 @@ public class CacheTest {
     }
 
     @Test
-    public void getTest() throws InterruptedException {
-        Cache<Integer, String> cache = new SlidingTimedCache<>(10, 100);
-
+    public void getTest1() throws InterruptedException {
         cache.put(Element.of(1, "one"));
         cache.put(Element.of(2, "two"));
         cache.put(Element.of(3, "three"));
@@ -62,7 +60,35 @@ public class CacheTest {
 
         assertThat(element10).isNull();
 
-        // Ждём 300 мс, и проверяем, что все элементы из кеша удалились
+        // Ждём 200 мс, и проверяем, что все элементы из кеша удалились
+        TimeUnit.MILLISECONDS.sleep(250);
+
+        List<Element<Integer, String>> allElements = cache.getAll();
+        assertThat(allElements).isEmpty();
+    }
+
+    @Test
+    public void getElementShouldUpdateLastAccessTimeTest() throws InterruptedException {
+        Element<Integer, String> element = Element.of(1, "one");
+        cache.put(element);
+        long lastAccessTime = element.getLastAccessTime();
+
+        // Ждём 70 мс и получаем элемент, время последнего доступа у него обновляется
+        TimeUnit.MILLISECONDS.sleep(70);
+
+        element = cache.getElement(1);
+        assertThat(element).isNotNull();
+        assertThat(element.getValue()).isEqualTo("one");
+        assertThat(element.getLastAccessTime()).isGreaterThan(lastAccessTime);
+        lastAccessTime = element.getLastAccessTime();
+
+        // Ждём ещё 70 мс => элемент на месте
+        element = cache.getElement(1);
+        assertThat(element).isNotNull();
+        assertThat(element.getValue()).isEqualTo("one");
+        assertThat(element.getLastAccessTime()).isGreaterThan(lastAccessTime);
+
+        // Ждём 200 мс, и проверяем, что все элементы из кеша удалились
         TimeUnit.MILLISECONDS.sleep(200);
 
         List<Element<Integer, String>> allElements = cache.getAll();
@@ -71,8 +97,6 @@ public class CacheTest {
 
     @Test
     public void removeElementTest() {
-        Cache<Integer, String> cache = new SlidingTimedCache<>(10, 100);
-
         cache.put(Element.of(1, "one"));
         cache.put(Element.of(2, "two"));
         cache.put(Element.of(3, "three"));
@@ -94,8 +118,6 @@ public class CacheTest {
 
     @Test
     public void disposeTest() {
-        Cache<Integer, String> cache = new SlidingTimedCache<>(10, 100);
-
         cache.put(Element.of(1, "one"));
         cache.put(Element.of(2, "two"));
         cache.put(Element.of(3, "three"));

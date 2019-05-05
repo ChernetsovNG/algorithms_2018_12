@@ -3,9 +3,7 @@ package ru.nchernetsov.cache;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -19,6 +17,8 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
     private static final int TIME_THRESHOLD_MS = 5;
 
     private final Map<K, Element<K, V>> elements = new LinkedHashMap<>();
+
+    private final Map<K, ScheduledFuture<?>> futures = new ConcurrentHashMap<>();
 
     private final ScheduledExecutorService executorService;
 
@@ -50,8 +50,13 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
             elements.put(key, element);
 
             if (lifeTimeMs != 0) {
-                // планируем задачу на выселение элемента через lifeTimeMs
-                executorService.schedule(getTimerTask(key), lifeTimeMs, TimeUnit.MILLISECONDS);
+                // планируем периодическую задачу на выселение элемента через lifeTimeMs. Она будет запускаться
+                // через каждые lifeTimeMs миллисекунд и проверять, не устарел ли элемент в кеше и не нужно ли его
+                // выселить. Доступ к элементу обновляет lastAccessTime, поэтому запустить задачу один раз недостаточно
+                ScheduledFuture<?> future = executorService.scheduleAtFixedRate(
+                    getRemoveElementTask(key), lifeTimeMs, lifeTimeMs, TimeUnit.MILLISECONDS);
+                // запоминаем future для отмены задачи после удаления элемента из кеша
+                futures.put(key, future);
             }
         }
     }
@@ -107,11 +112,18 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
      * @param key ключ
      * @return отложенная задача
      */
-    private Runnable getTimerTask(final K key) {
+    private Runnable getRemoveElementTask(final K key) {
         return () -> {
             Element<K, V> checkedElement = elements.get(key);
             if (checkedElement == null || elementIsOutOfDate(checkedElement)) {
+                // удаляем элемент из кеша
                 elements.remove(key);
+                // останавливаем периодическую задачу
+                ScheduledFuture<?> future = futures.get(key);
+                if (future != null) {
+                    future.cancel(false);
+                    futures.remove(key);
+                }
             }
         };
     }
