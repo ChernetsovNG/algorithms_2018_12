@@ -1,5 +1,7 @@
 package ru.nchernetsov.cache;
 
+import java.util.Objects;
+
 import static ru.nchernetsov.cache.Cache.getCurrentTime;
 
 /**
@@ -59,5 +61,23 @@ public class Element<K, V> {
 
     synchronized void setAccessTime() {
         lastAccessTime = getCurrentTime();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Element<?, ?> element = (Element<?, ?>) o;
+
+        if (!Objects.equals(key, element.key)) return false;
+        return Objects.equals(value, element.value);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = key != null ? key.hashCode() : 0;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
     }
 }
