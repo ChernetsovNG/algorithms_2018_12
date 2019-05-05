@@ -1,5 +1,6 @@
 package ru.nchernetsov.cache;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
 
     private static final int TIME_THRESHOLD_MS = 5;
 
-    private final Map<K, Element<K, V>> elements = new LinkedHashMap<>();
+    private final Map<K, Element<K, V>> elements = Collections.synchronizedMap(new LinkedHashMap<>());
 
     private final Map<K, ScheduledFuture<?>> futures = new ConcurrentHashMap<>();
 
@@ -39,25 +40,23 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
 
     @Override
     public void put(Element<K, V> element) {
-        synchronized (elements) {
-            // если места уже нет, то выселяем первый добавленный элемент
-            if (elements.size() == maxElements) {
-                K firstKey = elements.keySet().iterator().next();
-                elements.remove(firstKey);
-            }
+        // если места уже нет, то выселяем первый добавленный элемент
+        if (elements.size() == maxElements) {
+            K firstKey = elements.keySet().iterator().next();
+            elements.remove(firstKey);
+        }
 
-            K key = element.getKey();
-            elements.put(key, element);
+        K key = element.getKey();
+        elements.put(key, element);
 
-            if (lifeTimeMs != 0) {
-                // планируем периодическую задачу на выселение элемента через lifeTimeMs. Она будет запускаться
-                // через каждые lifeTimeMs миллисекунд и проверять, не устарел ли элемент в кеше и не нужно ли его
-                // выселить. Доступ к элементу обновляет lastAccessTime, поэтому запустить задачу один раз недостаточно
-                ScheduledFuture<?> future = executorService.scheduleAtFixedRate(
-                    getRemoveElementTask(key), lifeTimeMs, lifeTimeMs, TimeUnit.MILLISECONDS);
-                // запоминаем future для отмены задачи после удаления элемента из кеша
-                futures.put(key, future);
-            }
+        if (lifeTimeMs != 0) {
+            // планируем периодическую задачу на выселение элемента через lifeTimeMs. Она будет запускаться
+            // через каждые lifeTimeMs миллисекунд и проверять, не устарел ли элемент в кеше и не нужно ли его
+            // выселить. Доступ к элементу обновляет lastAccessTime, поэтому запустить задачу один раз недостаточно
+            ScheduledFuture<?> future = executorService.scheduleAtFixedRate(
+                removeElementTask(key), lifeTimeMs, lifeTimeMs, TimeUnit.MILLISECONDS);
+            // запоминаем future для отмены задачи после удаления элемента из кеша
+            futures.put(key, future);
         }
     }
 
@@ -86,9 +85,7 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
 
     @Override
     public void removeElement(K key) {
-        synchronized (elements) {
-            elements.remove(key);
-        }
+        elements.remove(key);
     }
 
     @Override
@@ -100,9 +97,7 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
 
     @Override
     public void dispose() {
-        synchronized (elements) {
-            elements.clear();
-        }
+        elements.clear();
         executorService.shutdown();
     }
 
@@ -112,10 +107,10 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
      * @param key ключ
      * @return отложенная задача
      */
-    private Runnable getRemoveElementTask(final K key) {
+    private Runnable removeElementTask(final K key) {
         return () -> {
             Element<K, V> checkedElement = elements.get(key);
-            if (checkedElement == null || elementIsOutOfDate(checkedElement)) {
+            if (checkedElement == null || isElementOutOfDate(checkedElement)) {
                 // удаляем элемент из кеша
                 elements.remove(key);
                 // останавливаем периодическую задачу
@@ -134,7 +129,7 @@ public class SlidingTimedCache<K, V> implements Cache<K, V> {
      * @param element элемент
      * @return устарел ли элемент?
      */
-    private boolean elementIsOutOfDate(Element<K, V> element) {
+    private boolean isElementOutOfDate(Element<K, V> element) {
         return element.getLastAccessTime() + lifeTimeMs < Cache.getCurrentTime() + TIME_THRESHOLD_MS;
     }
 }

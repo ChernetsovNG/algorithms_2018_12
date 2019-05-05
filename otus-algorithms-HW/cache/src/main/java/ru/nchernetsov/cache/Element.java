@@ -30,7 +30,7 @@ public class Element<K, V> {
      */
     private long lastAccessTime;
 
-    public Element(K key, V value) {
+    private Element(K key, V value) {
         this.key = key;
         this.value = value;
         this.creationTime = getCurrentTime();
@@ -57,7 +57,7 @@ public class Element<K, V> {
         return lastAccessTime;
     }
 
-    public synchronized void setAccessTime() {
+    synchronized void setAccessTime() {
         lastAccessTime = getCurrentTime();
     }
 }
