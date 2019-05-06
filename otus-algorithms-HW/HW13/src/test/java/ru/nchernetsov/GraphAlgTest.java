@@ -1,6 +1,7 @@
 package ru.nchernetsov;
 
 import org.junit.Test;
+import ru.nchernetsov.graph.DirectedGraph;
 import ru.nchernetsov.graph.Graph;
 
 import java.util.ArrayList;
@@ -42,9 +43,9 @@ public class GraphAlgTest {
 
     @Test
     public void getInvertedGraphTest1() {
-        Graph graph = createTestGraph();
+        DirectedGraph graph = createTestGraph();
 
-        Graph invertedGraph = getInvertedGraph(graph);
+        DirectedGraph invertedGraph = getInvertedGraph(graph);
 
         // проверяем вектора смежности инвертированного графа
         MyArrayList<MyArrayList<Integer>> adjVectorsList = invertedGraph.getAdjVectorsList();
@@ -69,7 +70,7 @@ public class GraphAlgTest {
 
     @Test
     public void getStronglyConnectedComponentsTest1() {
-        Graph graph = new Graph(11);
+        DirectedGraph graph = new DirectedGraph(11);
 
         graph.addVertex(0);
         graph.addVertex(1);
@@ -117,8 +118,8 @@ public class GraphAlgTest {
         assertThat(component4).containsExactlyInAnyOrder(3, 4, 5);
     }
 
-    private Graph createTestGraph() {
-        Graph graph = new Graph(10);
+    private DirectedGraph createTestGraph() {
+        DirectedGraph graph = new DirectedGraph(10);
 
         graph.addVertex(0);
         graph.addVertex(1);

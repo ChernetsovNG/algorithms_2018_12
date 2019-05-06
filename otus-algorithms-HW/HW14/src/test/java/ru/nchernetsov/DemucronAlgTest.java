@@ -1,11 +1,12 @@
 package ru.nchernetsov;
 
 import org.junit.Test;
+import ru.nchernetsov.graph.DirectedGraph;
 import ru.nchernetsov.graph.Graph;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.nchernetsov.DemucronAlg.convertAdjVectorsToAdjMatrix;
 import static ru.nchernetsov.DemucronAlg.demucronTopologySort;
+import static ru.nchernetsov.graph.GraphUtils.convertAdjVectorsToAdjMatrix;
 
 public class DemucronAlgTest {
 
@@ -33,7 +34,7 @@ public class DemucronAlgTest {
 
     @Test
     public void demucronTopologySortTest2() {
-        Graph graph = createTestGraph();
+        DirectedGraph graph = createTestGraph();
 
         int[][] result = demucronTopologySort(graph);
 
@@ -47,8 +48,8 @@ public class DemucronAlgTest {
         assertThat(result[5]).isEqualTo(new int[]{2});
     }
 
-    private Graph createTestGraph() {
-        Graph graph = new Graph(14);
+    private DirectedGraph createTestGraph() {
+        DirectedGraph graph = new DirectedGraph(14);
 
         graph.addVertex(0);
         graph.addVertex(1);

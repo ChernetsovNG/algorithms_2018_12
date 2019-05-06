@@ -2,14 +2,15 @@ package ru.nchernetsov.graph;
 
 import ru.nchernetsov.MyArrayList;
 
-import java.util.Comparator;
-
-public class Graph {
+/**
+ * Граф, представленный множеством вершин и списком векторов смежности
+ */
+public abstract class Graph {
 
     /**
      * Вектора смежности == A[N][S_max], где S_max - максимальная степень вершины графа
      */
-    private final MyArrayList<MyArrayList<Integer>> adjVectorsList;
+    final MyArrayList<MyArrayList<Integer>> adjVectorsList;
 
     private final int maxVertexCount;
 
@@ -52,13 +53,7 @@ public class Graph {
         vertexCount++;
     }
 
-    public void addEdge(int from, int to) {
-        // добавляем к вектору смежности первой вершины вторую вершину
-        MyArrayList<Integer> fromVertexAdjVector = adjVectorsList.get(from);
-        fromVertexAdjVector.add(to);
-        // сортируем смежные вершины по возрастанию
-        fromVertexAdjVector.sort(Comparator.naturalOrder());
-    }
+    public abstract void addEdge(int from, int to);
 
     public MyArrayList<MyArrayList<Integer>> getAdjVectorsList() {
         return adjVectorsList;

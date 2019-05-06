@@ -1,5 +1,6 @@
 package ru.nchernetsov;
 
+import ru.nchernetsov.graph.DirectedGraph;
 import ru.nchernetsov.graph.Graph;
 import ru.nchernetsov.graph.Vertex;
 import ru.nchernetsov.sort.Utils;
@@ -50,13 +51,13 @@ public class GraphAlg {
      *
      * @return граф с инвертированными рёбрами
      */
-    public static Graph getInvertedGraph(Graph graph) {
+    public static DirectedGraph getInvertedGraph(DirectedGraph graph) {
         int maxVertexCount = graph.getMaxVertexCount();
         int vertexCount = graph.getVertexCount();
         Vertex[] vertices = graph.getVertices();
         MyArrayList<MyArrayList<Integer>> adjVectorsList = graph.getAdjVectorsList();
 
-        Graph invertedGraph = new Graph(maxVertexCount);
+        DirectedGraph invertedGraph = new DirectedGraph(maxVertexCount);
         // копируем массив вершин из данного графа в инвертированный
         for (int i = 0; i < vertices.length; i++) {
             invertedGraph.addVertex(i);
@@ -76,7 +77,7 @@ public class GraphAlg {
      *
      * @return список списков из индексов вершин, образующих сильно связанные компоненты графа
      */
-    public static MyArrayList<MyArrayList<Integer>> getStronglyConnectedComponents(Graph graph) {
+    public static MyArrayList<MyArrayList<Integer>> getStronglyConnectedComponents(DirectedGraph graph) {
         int[] stronglyConnectedComponentsArray = getStronglyConnectedComponentsArray(graph);
 
         int componentsCount = Utils.max(stronglyConnectedComponentsArray);
@@ -101,12 +102,12 @@ public class GraphAlg {
      * @return массив component, который каждой вершине сопоставляет номер её компонента связности
      * Компоненты связности нумеруются от единицы
      */
-    public static int[] getStronglyConnectedComponentsArray(Graph graph) {
+    public static int[] getStronglyConnectedComponentsArray(DirectedGraph graph) {
         int vertexCount = graph.getVertexCount();
         Vertex[] vertices = graph.getVertices();
 
         // Пусть G — исходный граф (this), H — инвертированный граф
-        Graph h = getInvertedGraph(graph);
+        DirectedGraph h = getInvertedGraph(graph);
 
         // В массиве ord будем хранить номера вершин в порядке окончания обработки
         // поиском в глубину в графе G
