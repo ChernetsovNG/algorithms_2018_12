@@ -11,13 +11,19 @@ public class Edge implements Comparable<Edge> {
 
     private final int v2;
 
-    private final Integer weight;
+    private final Double weight;
 
     public Edge(int v1, int v2) {
         this(v1, v2, 1);
     }
 
     public Edge(int v1, int v2, int weight) {
+        this.v1 = v1;
+        this.v2 = v2;
+        this.weight = (double) weight;
+    }
+
+    public Edge(int v1, int v2, double weight) {
         this.v1 = v1;
         this.v2 = v2;
         this.weight = weight;
@@ -31,7 +37,7 @@ public class Edge implements Comparable<Edge> {
         return v2;
     }
 
-    public Integer getWeight() {
+    public Double getWeight() {
         return weight;
     }
 

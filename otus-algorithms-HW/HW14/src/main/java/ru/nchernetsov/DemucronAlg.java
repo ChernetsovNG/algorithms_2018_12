@@ -4,6 +4,8 @@ import ru.nchernetsov.graph.DirectedGraph;
 
 import java.util.Comparator;
 
+import static ru.nchernetsov.graph.GraphUtils.convertAdjVectorsToAdjMatrix;
+
 public class DemucronAlg {
 
     /**
@@ -79,31 +81,6 @@ public class DemucronAlg {
 
         // Преобразуем массив ord в итоговый результат
         return convertOrdToResultArray(ord, k);
-    }
-
-    /**
-     * Преобразовать список векторов смежности графа в матрицу смежности
-     *
-     * @param vertexCount    количество вершин графа
-     * @param adjVectorsList список векторов смежности
-     * @return матрица смежности
-     */
-    public static int[][] convertAdjVectorsToAdjMatrix(int vertexCount, MyArrayList<MyArrayList<Integer>> adjVectorsList) {
-        int[][] adjMatrix = new int[vertexCount][vertexCount];
-
-        // диагональные элементы - нули
-        for (int i = 0; i < vertexCount; i++) {
-            adjMatrix[i][i] = 0;
-        }
-
-        for (int vertexIndex = 0; vertexIndex < adjVectorsList.size(); vertexIndex++) {
-            MyArrayList<Integer> adjVertices = adjVectorsList.get(vertexIndex);
-            for (Integer adjVertexIndex : adjVertices) {
-                adjMatrix[vertexIndex][adjVertexIndex] = 1;
-            }
-        }
-
-        return adjMatrix;
     }
 
     private static int[] initVectorM(int[][] B) {
