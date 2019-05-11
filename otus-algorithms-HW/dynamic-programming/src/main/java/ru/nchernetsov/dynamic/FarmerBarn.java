@@ -112,13 +112,13 @@ public class FarmerBarn {
 
     /**
      * Маленький сарай
-     * (решение задачи прямым перебором)
+     * (решение задачи прямым перебором за O(M^2 x N^2))
      *
      * @return одно число, соответствующее максимальной площади сарая (количество ячеек)
      */
     public int smallBarn() {
         int result = 0;
-        for (int y = 0; y < M; y++) {
+        for (int y = 0; y < M; y++) {  // двойной цикл O(N x M)
             for (int x = 0; x < N; x++) {
                 int maxSquare = findMaxSquare(x, y);
                 if (maxSquare > result) {
@@ -172,15 +172,15 @@ public class FarmerBarn {
 
     /**
      * Большой сарай
-     * (решение задачи методом динамического программирования)
+     * (решение задачи методом динамического программирования за O(N x M))
      *
      * @return одно число, соответствующее максимальной площади сарая (количество ячеек)
      */
     public int bigBarn() {
         int result = 0;
-        int[][] lengthMatrix = barnLength();
-        for (int[] A : lengthMatrix) {
-            Pair<int[], int[]> pairLR = barnWidth(A);
+        int[][] lengthMatrix = barnLength();  // O(N x M)
+        for (int[] A : lengthMatrix) {  // M раз
+            Pair<int[], int[]> pairLR = barnWidth(A);  // O(2 x N) == O(N)
             int[] L = pairLR.getFirst();
             int[] R = pairLR.getSecond();
             for (int i = 0; i < A.length; i++) {
@@ -199,6 +199,7 @@ public class FarmerBarn {
 
     /**
      * Найти максимальную площадь свободного прямоугольника, начиная от заданной клетки
+     * O(N x M)
      */
     private int findMaxSquare(int x, int y) {
         int height = 1;  // на сколько сдвинулись вниз
@@ -228,7 +229,7 @@ public class FarmerBarn {
 
     /**
      * Вспомогательная функция, которая для заданной клетки определяет, какое максимальное
-     * количество пустых элементов справа от заданной клетки (включая саму эту клетку)
+     * количество пустых элементов справа от заданной клетки (включая саму эту клетку), сложность - O(N)
      */
     private int findMaxEmptyElementsCountOnTheRight(int x, int y) {
         int result = 0;
