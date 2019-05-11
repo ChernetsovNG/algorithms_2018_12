@@ -16,5 +16,6 @@ include 'HW16'
 include 'HW17'
 include 'HW18'
 include 'BoyerMoore'
+include 'KnuthMorrisPratt'
 include 'RLE'
 
