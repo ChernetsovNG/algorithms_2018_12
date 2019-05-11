@@ -56,13 +56,26 @@ public class TreapTest {
 
     @Test
     public void treapTest3() {
-        Treap tree = new Treap(0, 0);
+        Treap treap = new Treap(0, 0);
         for (int i = 1; i < 1000; i++)
-            tree = tree.add(i);
+            treap = treap.add(i);
 
         for (int i = 0; i < 500; i++) {
             System.out.println(i);
-            tree = tree.remove(i);
+            treap = treap.remove(i);
         }
+    }
+
+    @Test(expected = ElementNotFoundException.class)
+    public void removeNotFoundElementFromTreapTest() {
+        Treap treap = new Treap(0, 0);
+        treap.remove(2);
+    }
+
+    @Test(expected = ElementNotFoundException.class)
+    public void removeElementFromEmptyTreapTest() {
+        Treap treap = new Treap(0, 0);
+        treap = treap.remove(0);
+        treap.remove(2);
     }
 }
