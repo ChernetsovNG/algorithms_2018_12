@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Задача про сарай фермера
@@ -18,9 +20,9 @@ public class FarmerBarn {
     private int N, M;
 
     /**
-     * Матрица из 0 и 1 (false и true), представляющая ферму
+     * Множество занятых точек
      */
-    private boolean[][] farm;
+    private Set<Coord> occupiedPoints;
 
     public FarmerBarn() {
     }
@@ -28,7 +30,7 @@ public class FarmerBarn {
     public FarmerBarn(int N, int M) {
         this.N = N;
         this.M = M;
-        farm = new boolean[M][N];
+        occupiedPoints = new HashSet<>();
     }
 
     public void readInputAndInitFarm() throws IOException {
@@ -43,7 +45,7 @@ public class FarmerBarn {
 
         this.N = N;
         this.M = M;
-        farm = new boolean[M][N];
+        occupiedPoints = new HashSet<>();
 
         // На второй строке вводится количество построек T (от 0 до 10000)
         line = reader.readLine();
@@ -66,7 +68,7 @@ public class FarmerBarn {
         if (Y < 0 || Y >= M) {
             throw new IllegalArgumentException(String.format("must be 0 <= Y < M, but Y = %d where M = %d", Y, M));
         }
-        farm[Y][X] = true;
+        occupiedPoints.add(Coord.of(X, Y));
     }
 
     /**
@@ -89,6 +91,30 @@ public class FarmerBarn {
     }
 
     /**
+     * Длина сарая:
+     * Матрица N x M из чисел -
+     * сколько "выше" есть свободных клеток подряд, начиная с указанной клетки поля
+     * Всего M строк, по N чисел на каждой, записанных через пробел
+     */
+    public int[][] barnLength() {
+        int[][] result = new int[M][N];
+        // первую строку инициализируем единицами
+        Arrays.fill(result[0], 1);
+        for (int y = 1; y < M; y++) {
+            for (int x = 0; x < N; x++) {
+                if (occupiedPoints.contains(Coord.of(x, y))) {
+                    result[y][x] = 0;
+                } else {
+                    result[y][x] = result[y - 1][x] + 1;
+                }
+            }
+        }
+        return result;
+    }
+
+    // PRIVATE section
+
+    /**
      * Найти максимальную площадь свободного прямоугольника, начиная от заданной клетки
      */
     private int findMaxSquare(int x, int y) {
@@ -98,15 +124,17 @@ public class FarmerBarn {
             return 0;
         }
         int maxSquare = height * limitLength;  // максимальная площадь, найденная на данный момент
-        for (int yi = y + 1; yi < M; yi++) {
+        for (int yi = y + 1; yi < M; yi++) {  // идём вниз
             height++;
             int width = findMaxEmptyElementsCountOnTheRight(x, yi);
+            // ограничения, чтобы не выйти за границы прямоугольника вправо
             if (limitLength > width) {
                 limitLength = width;
             }
             if (width > limitLength) {
                 width = limitLength;
             }
+            // вычисляем площадь
             int wh = width * height;
             if (maxSquare < wh) {
                 maxSquare = wh;
@@ -122,33 +150,11 @@ public class FarmerBarn {
     private int findMaxEmptyElementsCountOnTheRight(int x, int y) {
         int result = 0;
         while (x < N) {
-            if (farm[y][x]) {
+            if (occupiedPoints.contains(Coord.of(x, y))) {
                 break;
             }
             result++;
             x++;
-        }
-        return result;
-    }
-
-    /**
-     * Длина сарая:
-     * Матрица N x M из чисел -
-     * сколько "выше" есть свободных клеток подряд, начиная с указанной клетки поля
-     * Всего M строк, по N чисел на каждой, записанных через пробел
-     */
-    public int[][] barnLength() {
-        int[][] result = new int[M][N];
-        // первую строку инициализируем единицами
-        Arrays.fill(result[0], 1);
-        for (int y = 1; y < M; y++) {
-            for (int x = 0; x < N; x++) {
-                if (farm[y][x]) {
-                    result[y][x] = 0;
-                } else {
-                    result[y][x] = result[y - 1][x] + 1;
-                }
-            }
         }
         return result;
     }
