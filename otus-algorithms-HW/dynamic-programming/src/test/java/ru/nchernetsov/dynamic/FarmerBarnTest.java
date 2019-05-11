@@ -146,4 +146,24 @@ public class FarmerBarnTest {
 
         assertThat(bigBarn).isEqualTo(12);
     }
+
+    @Test
+    public void performanceTest1() {
+        FarmGenerator generator = new FarmGenerator();
+        String[] farmSpecification = generator.generate(200, 200, 1000);
+        FarmerBarn farmerBarn = new FarmerBarn();
+        farmerBarn.readStringArrayInputAndInitFarm(farmSpecification);
+
+        long startTime = System.nanoTime();
+        int smallBarn = farmerBarn.smallBarn();
+        long endTime = System.nanoTime();
+
+        System.out.printf("Small barn: result = %d, spent time = %.1f ms\n", smallBarn, (endTime - startTime) * 1.0f / 1_000_000);
+
+        startTime = System.nanoTime();
+        int bigBarn = farmerBarn.bigBarn();
+        endTime = System.nanoTime();
+
+        System.out.printf("Big barn: result = %d, spent time = %.1f ms\n", bigBarn, (endTime - startTime) * 1.0f / 1_000_000);
+    }
 }
