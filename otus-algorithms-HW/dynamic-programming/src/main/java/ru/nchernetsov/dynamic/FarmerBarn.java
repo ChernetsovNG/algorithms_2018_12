@@ -3,7 +3,6 @@ package ru.nchernetsov.dynamic;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +32,30 @@ public class FarmerBarn {
         occupiedPoints = new HashSet<>();
     }
 
-    public void readInputAndInitFarm() throws IOException {
+    public void readStringArrayInputAndInitFarm(String[] lines) {
+        String line = lines[0];
+
+        String[] NM = line.split(" ");
+        int N = Integer.parseInt(NM[0]);
+        int M = Integer.parseInt(NM[1]);
+
+        this.N = N;
+        this.M = M;
+        occupiedPoints = new HashSet<>();
+
+        line = lines[1];
+        int T = Integer.parseInt(line);
+
+        for (int i = 0; i < T; i++) {
+            line = lines[2 + i];
+            String[] XY = line.split(" ");
+            int X = Integer.parseInt(XY[0]);
+            int Y = Integer.parseInt(XY[1]);
+            setValue(X, Y);
+        }
+    }
+
+    public void readConsoleInputAndInitFarm() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         // На первой строке вводится размер матрицы N M (через пробел) от 1 до 1000
@@ -71,6 +93,20 @@ public class FarmerBarn {
         occupiedPoints.add(Coord.of(X, Y));
     }
 
+    public void printFarm() {
+        for (int y = 0; y < M; y++) {
+            StringBuilder row = new StringBuilder();
+            for (int x = 0; x < N; x++) {
+                if (occupiedPoints.contains(Coord.of(x, y))) {
+                    row.append('*');
+                } else {
+                    row.append('-');
+                }
+            }
+            System.out.println(row);
+        }
+    }
+
     /**
      * Маленький сарай
      * (решение задачи прямым перебором)
@@ -98,12 +134,12 @@ public class FarmerBarn {
      */
     public int[][] barnLength() {
         int[][] result = new int[M][N];
-        // первую строку инициализируем единицами
-        Arrays.fill(result[0], 1);
-        for (int y = 1; y < M; y++) {
+        for (int y = 0; y < M; y++) {
             for (int x = 0; x < N; x++) {
                 if (occupiedPoints.contains(Coord.of(x, y))) {
                     result[y][x] = 0;
+                } else if (y == 0) {  // 1-я строка
+                    result[y][x] = 1;
                 } else {
                     result[y][x] = result[y - 1][x] + 1;
                 }
