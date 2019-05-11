@@ -183,7 +183,7 @@ public class FarmerBarn {
             Pair<int[], int[]> pairLR = barnWidth(A);  // O(2 x N) == O(N)
             int[] L = pairLR.getFirst();
             int[] R = pairLR.getSecond();
-            for (int i = 0; i < A.length; i++) {
+            for (int i = 0; i < A.length; i++) {  // N раз
                 int length = A[i];
                 int width = R[i] - L[i] + 1;
                 int square = length * width;
