@@ -118,4 +118,32 @@ public class FarmerBarnTest {
         assertThat(L).containsExactly(0, 0, 0, 0, 0, 0, 0, 7, 8, 9);
         assertThat(R).containsExactly(0, 1, 2, 3, 4, 5, 9, 9, 9, 9);
     }
+
+    @Test
+    public void bigBarnTest1() {
+        FarmerBarn farmerBarn = new FarmerBarn(4, 3);
+        farmerBarn.occupyPoint(1, 1);
+        farmerBarn.occupyPoint(0, 2);
+
+        int bigBarn = farmerBarn.bigBarn();
+
+        assertThat(bigBarn).isEqualTo(6);
+    }
+
+    @Test
+    public void bigBarnTest2() {
+        FarmerBarn farmerBarn = new FarmerBarn(6, 6);
+        farmerBarn.occupyPoint(1, 0);
+        farmerBarn.occupyPoint(2, 0);
+        farmerBarn.occupyPoint(1, 1);
+        farmerBarn.occupyPoint(0, 3);
+        farmerBarn.occupyPoint(2, 3);
+        farmerBarn.occupyPoint(4, 4);
+        farmerBarn.occupyPoint(3, 5);
+        farmerBarn.occupyPoint(5, 5);
+
+        int bigBarn = farmerBarn.bigBarn();
+
+        assertThat(bigBarn).isEqualTo(12);
+    }
 }

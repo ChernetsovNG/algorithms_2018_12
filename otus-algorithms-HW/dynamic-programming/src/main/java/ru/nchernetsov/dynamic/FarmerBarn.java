@@ -170,6 +170,31 @@ public class FarmerBarn {
         return Pair.of(L, R);
     }
 
+    /**
+     * Большой сарай
+     * (решение задачи методом динамического программирования)
+     *
+     * @return одно число, соответствующее максимальной площади сарая (количество ячеек)
+     */
+    public int bigBarn() {
+        int result = 0;
+        int[][] lengthMatrix = barnLength();
+        for (int[] A : lengthMatrix) {
+            Pair<int[], int[]> pairLR = barnWidth(A);
+            int[] L = pairLR.getFirst();
+            int[] R = pairLR.getSecond();
+            for (int i = 0; i < A.length; i++) {
+                int length = A[i];
+                int width = R[i] - L[i] + 1;
+                int square = length * width;
+                if (square > result) {
+                    result = square;
+                }
+            }
+        }
+        return result;
+    }
+
     // PRIVATE section
 
     /**
