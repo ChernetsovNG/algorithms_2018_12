@@ -65,4 +65,17 @@ public class TreapTest {
             tree = tree.remove(i);
         }
     }
+
+    @Test(expected = ElementNotFoundException.class)
+    public void removeNotFoundElementFromTreapTest() {
+        Treap treap = new Treap(0, 0);
+        treap.remove(2);
+    }
+
+    @Test(expected = ElementNotFoundException.class)
+    public void removeElementFromEmptyTreapTest() {
+        Treap treap = new Treap(0, 0);
+        treap = treap.remove(0);
+        treap.remove(2);
+    }
 }
