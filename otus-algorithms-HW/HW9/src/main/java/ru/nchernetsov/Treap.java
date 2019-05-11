@@ -77,8 +77,14 @@ public class Treap {
         Pair<Treap, Treap> thisSplit = this.split(x - 1);
         Treap l = thisSplit.getFirst();
         Treap r = thisSplit.getSecond();
+        if (r == null) {
+            throw new ElementNotFoundException(String.format("Element %d not found in treap", x - 1));
+        }
         Pair<Treap, Treap> rightSplit = r.split(x);
         r = rightSplit.getSecond();
+        if (r == null) {
+            throw new ElementNotFoundException(String.format("Element %d not found in treap", x));
+        }
         return merge(l, r);
     }
 
