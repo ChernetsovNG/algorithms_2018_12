@@ -41,6 +41,9 @@ public class Stack<E> implements Iterable<E> {
         return stackArray.size() == 0;
     }
 
+    public void clear() {
+        stackArray.clear();
+    }
 
     @Override
     public Iterator<E> iterator() {

@@ -1,5 +1,8 @@
 package ru.nchernetsov.dynamic;
 
+import ru.nchernetsov.Stack;
+import ru.nchernetsov.tuples.Pair;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -51,7 +54,7 @@ public class FarmerBarn {
             String[] XY = line.split(" ");
             int X = Integer.parseInt(XY[0]);
             int Y = Integer.parseInt(XY[1]);
-            setValue(X, Y);
+            occupyPoint(X, Y);
         }
     }
 
@@ -79,16 +82,16 @@ public class FarmerBarn {
             String[] XY = line.split(" ");
             int X = Integer.parseInt(XY[0]);
             int Y = Integer.parseInt(XY[1]);
-            setValue(X, Y);
+            occupyPoint(X, Y);
         }
     }
 
-    public void setValue(int X, int Y) {
+    public void occupyPoint(int X, int Y) {
         if (X < 0 || X >= N) {
-            throw new IllegalArgumentException(String.format("must be 0 <= X < N, but X = %d where N = %d", X, N));
+            throw new IllegalArgumentException(String.format("must be 0 <= X < N, but X = %d and N = %d", X, N));
         }
         if (Y < 0 || Y >= M) {
-            throw new IllegalArgumentException(String.format("must be 0 <= Y < M, but Y = %d where M = %d", Y, M));
+            throw new IllegalArgumentException(String.format("must be 0 <= Y < M, but Y = %d and M = %d", Y, M));
         }
         occupiedPoints.add(Coord.of(X, Y));
     }
@@ -127,7 +130,7 @@ public class FarmerBarn {
     }
 
     /**
-     * Длина сарая:
+     * Длина сарая (в направлении "на север"):
      * Матрица N x M из чисел -
      * сколько "выше" есть свободных клеток подряд, начиная с указанной клетки поля
      * Всего M строк, по N чисел на каждой, записанных через пробел
@@ -146,6 +149,25 @@ public class FarmerBarn {
             }
         }
         return result;
+    }
+
+    /**
+     * Ширина сарая:
+     * Нужно определить подходящую ширину сарая, для этого нужно для каждой позиции вычислить,
+     * сколько клеток влево и вправо можно использовать для выбора прямоугольника той длины, которая доступна из этой клетки
+     * Входные данные: массив A длин сарая (сколько элементов вверх свободно из каждой клетки)
+     * Вывод результата: массивы L и R.
+     * Построить две новые последовательности чисел по следующему правилу:
+     * Массив L. L[j] = x
+     * Для каждого элемента A[j] определить индекс x наиболее отдаленного элемента слева, который больше или равен A[j]
+     * И то же самое в другую сторону
+     * Массив R. R[j] = x
+     * Для каждого элемента А[j] определить индекс x наиболее отдаленного элемента справа, который больше или равен А[j]
+     */
+    public Pair<int[], int[]> barnWidth(int[] A) {
+        int[] L = calcL(A);
+        int[] R = calcR(A);
+        return Pair.of(L, R);
     }
 
     // PRIVATE section
@@ -193,5 +215,45 @@ public class FarmerBarn {
             x++;
         }
         return result;
+    }
+
+    private int[] calcL(int[] A) {
+        int len = A.length;
+        int[] L = new int[len];
+        Stack<Integer> stack = new Stack<>(len);
+        for (int i = len - 1; i >= 0; i--) {
+            while (!stack.isEmpty()) {
+                if (A[i] < A[stack.peek()]) {
+                    L[stack.pop()] = i + 1;
+                } else {
+                    break;
+                }
+            }
+            stack.push(i);
+        }
+        while (!stack.isEmpty()) {
+            L[stack.pop()] = 0;
+        }
+        return L;
+    }
+
+    private int[] calcR(int[] A) {
+        int len = A.length;
+        int[] R = new int[len];
+        Stack<Integer> stack = new Stack<>(len);
+        for (int i = 0; i < len; i++) {
+            while (!stack.isEmpty()) {
+                if (A[i] < A[stack.peek()]) {
+                    R[stack.pop()] = i - 1;
+                } else {
+                    break;
+                }
+            }
+            stack.push(i);
+        }
+        while (!stack.isEmpty()) {
+            R[stack.pop()] = len - 1;
+        }
+        return R;
     }
 }
