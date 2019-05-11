@@ -4,15 +4,26 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FarmTest {
+public class FarmerBarnTest {
+
+    @Test
+    public void smallBarnTest() {
+        FarmerBarn farmerBarn = new FarmerBarn(4, 3);
+        farmerBarn.setValue(1, 1);
+        farmerBarn.setValue(0, 2);
+
+        int smallBarn = farmerBarn.smallBarn();
+
+        assertThat(smallBarn).isEqualTo(6);
+    }
 
     @Test
     public void barnLengthTest() {
-        Farm farm = new Farm(4, 3);
-        farm.setValue(1, 1);
-        farm.setValue(0, 2);
+        FarmerBarn farmerBarn = new FarmerBarn(4, 3);
+        farmerBarn.setValue(1, 1);
+        farmerBarn.setValue(0, 2);
 
-        int[][] barnLength = farm.barnLength();
+        int[][] barnLength = farmerBarn.barnLength();
 
         assertThat(barnLength).hasSize(3);
         assertThat(barnLength[0]).hasSize(4);
