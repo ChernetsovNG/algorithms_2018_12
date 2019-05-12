@@ -39,7 +39,7 @@ public class MaliciousUrlDatabase {
         return maliciousUrls.size();
     }
 
-    // читаем из архива файл вредоносных доменных имён и преобразуем его в список строк
+    // читаем из архива файл вредоносных доменных имён и преобразуем его в множество строк
     private static Set<String> readDatabaseFile() {
         try {
             ByteArrayOutputStream outputStream = readFileInsideTarArchive();
