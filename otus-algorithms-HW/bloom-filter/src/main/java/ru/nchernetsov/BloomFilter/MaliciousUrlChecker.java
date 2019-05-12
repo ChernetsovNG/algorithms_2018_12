@@ -20,7 +20,7 @@ public class MaliciousUrlChecker {
         Iterator<String> urlDatabaseIterator = MaliciousUrlDatabase.getUrlDatabaseIterator();
 
         // количество элементов в фильтре Блума задаём с некоторым запасом
-        int expectedInsertions = urlDatabaseSize + 1_000_000;
+        int expectedInsertions = urlDatabaseSize + 100_000;
         // создаём фильтр Блума и наполняем его данными
         bloomFilter = BloomFilter.create(Funnels.stringFunnel(StandardCharsets.UTF_8), expectedInsertions, fpp);
         urlDatabaseIterator.forEachRemaining(bloomFilter::put);

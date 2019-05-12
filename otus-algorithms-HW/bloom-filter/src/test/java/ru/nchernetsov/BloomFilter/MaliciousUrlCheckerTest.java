@@ -1,12 +1,16 @@
 package ru.nchernetsov.BloomFilter;
 
+import net.andreinc.mockneat.MockNeat;
+import net.andreinc.mockneat.types.enums.DomainSuffixType;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import static net.andreinc.mockneat.types.enums.URLSchemeType.HTTP;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MaliciousUrlCheckerTest {
@@ -40,6 +44,7 @@ public class MaliciousUrlCheckerTest {
 
     // рассмотрим точность работы фильтра Блума (% ошибок, false positives и т.д.)
     @Test
+    @Ignore(value = "Проверка работы фильтра Блума, но не тест")
     public void calcBloomFilterAccuracy() {
         // пройдём по всем элементам базы данных и проверим, что говорит на их счёт фильтр Блума
         Iterator<String> urlDatabaseIterator = MaliciousUrlDatabase.getUrlDatabaseIterator();
@@ -63,5 +68,43 @@ public class MaliciousUrlCheckerTest {
             overallCount, truePositiveCount, falseNegativeCount);
 
         // Видим, что ложно-отрицательных ответов нет, как и должно быть
+    }
+
+    // Рассматрим работу фильтра на наборе случайных URL-адресов
+    @Test
+    @Ignore(value = "Проверка работы фильтра Блума, но не тест")
+    public void randomURLsTest() {
+        // задаём вероятность ложно-положительных срабатываний в 1 %
+        MaliciousUrlChecker testChecker = new MaliciousUrlChecker(0.01);
+
+        // Генерируем 10_000 случайных URL
+        MockNeat mockNeat = MockNeat.threadLocal();
+        List<String> randomURLs = mockNeat.urls()
+            .scheme(HTTP)
+            .domain(DomainSuffixType.ALL)
+            .list(10_000)
+            .get();
+
+        int overallCount = 0;
+        int truePositiveCount = 0;   // элемент есть во множестве, и фильтр говорит, что он есть
+        int falsePositiveCount = 0;  // элемента нет во множестве, но фильтр говорит, что он есть
+
+        for (String randomURL : randomURLs) {
+            boolean mightContain = testChecker.bloomFilterMightContain(randomURL);
+            overallCount++;
+            if (mightContain) {
+                if (MaliciousUrlDatabase.urlContainsInDatabase(randomURL)) {
+                    truePositiveCount++;
+                } else {
+                    falsePositiveCount++;
+                }
+            }
+        }
+
+        // полученная вероятность ложно-положительных ответов (false positive probability)
+        double fpp = falsePositiveCount * 1.0f / overallCount;
+
+        System.out.printf("overall count = %d, true positive count = %d, false positive count = %d, fpp = %.4f (%.2f %%)",
+            overallCount, truePositiveCount, falsePositiveCount, fpp, fpp * 100.0f);
     }
 }

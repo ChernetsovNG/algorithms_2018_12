@@ -1,6 +1,6 @@
-
 dependencies {
-    compile project(':common')
     compile('com.google.guava:guava:27.1-jre')
     compile('org.apache.commons:commons-compress:1.18')
+
+    testCompile('net.andreinc.mockneat:mockneat:0.3.6')
 }
