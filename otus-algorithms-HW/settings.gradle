@@ -18,4 +18,5 @@ include 'HW18'
 include 'BoyerMoore'
 include 'KnuthMorrisPratt'
 include 'RLE'
+include 'bloom-filter'
 
