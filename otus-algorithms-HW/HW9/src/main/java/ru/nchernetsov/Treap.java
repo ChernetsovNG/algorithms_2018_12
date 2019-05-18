@@ -1,6 +1,6 @@
 package ru.nchernetsov;
 
-import ru.nchernetsov.common.Pair;
+import ru.nchernetsov.tuples.Pair;
 
 import java.util.Optional;
 import java.util.Random;

@@ -1,7 +1,7 @@
 package ru.nchernetsov.select;
 
 import org.junit.Test;
-import ru.nchernetsov.common.Pair;
+import ru.nchernetsov.tuples.Pair;
 
 import java.util.Arrays;
 
