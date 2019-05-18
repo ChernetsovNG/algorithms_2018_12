@@ -1,5 +1,8 @@
 package ru.nchernetsov.GradientDescent;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class DatasetElement {
 
     private double firstElement;
@@ -30,7 +33,18 @@ public class DatasetElement {
 
     private double LSTAT;
 
+    /**
+     * Целевая колонка
+     */
     private double MEDV;
+
+    public List<Double> getVectorX() {
+        return Arrays.asList(firstElement, CRIM, ZN, INDUS, CHAS, NOX, RM, AGE, DIS, RAD, TAX, PTRATIO, B, LSTAT);
+    }
+
+    public Double getY() {
+        return MEDV;
+    }
 
     public double getFirstElement() {
         return firstElement;

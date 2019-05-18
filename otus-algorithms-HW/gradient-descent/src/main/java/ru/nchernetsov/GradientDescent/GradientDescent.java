@@ -1,24 +1,39 @@
 package ru.nchernetsov.GradientDescent;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Алгоритм градиентного спуска для метода наименьших квадратов
  */
 public class GradientDescent {
 
-    /*
-    Алгоритм должен принимать на вход массив значений float "количество примеров" x "количество признаков" и
-    вектор float размера "количество примеров", начальный набор весов (из нормального распределения N(0, 1)$, learning rate (размер шага)
-     */
-
-
-    /*
-    Написать функцию для нормализации данных x_i_norm = (x_i - mu)/sigma
-     */
-
     public static void main(String[] args) throws IOException {
         GradientDescent gradientDescent = new GradientDescent();
         Dataset dataset = Dataset.readDatasetFromCsvFile("boston_housing-31272-bf744f.csv");
+    }
+
+    /**
+     * Функция ошибок MSE, с усреднением
+     *
+     * @param yTrue      вектор истинных значений
+     * @param yPredicted вектор предсказанных значений
+     */
+    public static double getMeanSquaredError(List<Double> yTrue, List<Double> yPredicted) {
+        int n = yTrue.size();
+        if (yPredicted.size() != n) {
+            throw new IllegalArgumentException("Sizes of vectors yTrue and yPredicted are not equals");
+        }
+        double sum = 0.0;
+        for (int i = 0; i < n; i++) {
+            double yTrueI = yTrue.get(i);
+            double yPredictedI = yPredicted.get(i);
+            double deltaY = yTrueI - yPredictedI;
+            sum += deltaY * deltaY;
+        }
+
+
+        return sum / n;
     }
 }
