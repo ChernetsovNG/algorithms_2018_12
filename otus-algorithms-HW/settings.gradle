@@ -19,4 +19,5 @@ include 'BoyerMoore'
 include 'KnuthMorrisPratt'
 include 'RLE'
 include 'dynamic-programming'
+include 'gradient-descent'
 
