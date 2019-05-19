@@ -19,13 +19,13 @@ public class DatasetTest {
     public void test1() throws IOException {
         Dataset dataset = Dataset.readDatasetFromCsvFile(14, "boston_housing-31272-bf744f.csv");
         // проверяем, что все нужные значения вычисляются без ошибок
-        List<List<Double>> x = dataset.getX();
+        List<Double[]> x = dataset.getX();
         List<Double> y = dataset.getY();
         List<Double> muX = dataset.getMuX();
         List<Double> sigmaX = dataset.getSigmaX();
         Double muY = dataset.getMuY();
         Double sigmaY = dataset.getSigmaY();
-        List<List<Double>> normalizeX = dataset.getNormalizeX();
+        List<Double[]> normalizeX = dataset.getNormalizeX();
         List<Double> normalizeY = dataset.getNormalizeY();
     }
 }

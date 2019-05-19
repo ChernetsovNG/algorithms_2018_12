@@ -1,18 +1,14 @@
 package ru.nchernetsov.GradientDescent;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class DatasetElement {
-
-    private final int xSize;
 
     private final Double[] vectorX;
 
     private final Double Y;
 
-    public DatasetElement(int xSize, Double[] vectorX, Double Y) {
-        this.xSize = xSize;
+    DatasetElement(Double[] vectorX, Double Y) {
         this.vectorX = vectorX;
         this.Y = Y;
     }
@@ -20,14 +16,14 @@ public class DatasetElement {
     /**
      * Вектор признаков
      */
-    public List<Double> getVectorX() {
-        return Arrays.asList(vectorX);
+    Double[] getVectorX() {
+        return Arrays.copyOf(vectorX, vectorX.length);
     }
 
     /**
      * Целевое значение
      */
-    public Double getY() {
+    Double getY() {
         return Y;
     }
 }

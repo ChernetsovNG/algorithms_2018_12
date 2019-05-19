@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static ru.nchernetsov.GradientDescent.VectorUtils.divideVectors;
 import static ru.nchernetsov.GradientDescent.VectorUtils.substractVectors;
+import static ru.nchernetsov.Utils.convertDoubleListToArray;
 
 public class Dataset {
 
@@ -27,15 +27,11 @@ public class Dataset {
     }
 
     private void addElement(DatasetElement element) {
-        if (element.getVectorX().size() != xSize) {
+        if (element.getVectorX().length != xSize) {
             throw new IllegalArgumentException("Size of added element != xSize: xSize = " +
-                xSize + " element vector size = " + element.getVectorX().size());
+                xSize + " element vector size = " + element.getVectorX().length);
         }
         elements.add(element);
-    }
-
-    public List<DatasetElement> getElements() {
-        return Collections.unmodifiableList(elements);
     }
 
     public int size() {
@@ -56,9 +52,9 @@ public class Dataset {
 
         int count = elements.size();
         for (DatasetElement element : elements) {
-            List<Double> vectorX = element.getVectorX();
+            Double[] vectorX = element.getVectorX();
             for (int i = 0; i < xSize; i++) {
-                Double vectorXi = vectorX.get(i);
+                Double vectorXi = vectorX[i];
                 Double sumI = vectorSum.get(i);
                 sumI += vectorXi;
                 vectorSum.set(i, sumI);
@@ -102,9 +98,9 @@ public class Dataset {
         int count = elements.size();
 
         for (DatasetElement element : elements) {
-            List<Double> vectorX = element.getVectorX();
+            Double[] vectorX = element.getVectorX();
             for (int i = 0; i < xSize; i++) {
-                Double vectorXi = vectorX.get(i);
+                Double vectorXi = vectorX[i];
                 Double muI = mu.get(i);
                 Double sumI = vectorSum.get(i);
 
@@ -136,7 +132,7 @@ public class Dataset {
         return Math.sqrt(sum / count);
     }
 
-    public List<List<Double>> getX() {
+    public List<Double[]> getX() {
         return elements.stream()
             .map(DatasetElement::getVectorX)
             .collect(Collectors.toList());
@@ -151,14 +147,16 @@ public class Dataset {
     /**
      * Нормализованный массив данных X: x_i_norm = (x_i - mu) / sigma
      */
-    public List<List<Double>> getNormalizeX() {
-        List<List<Double>> initialX = getX();
+    public List<Double[]> getNormalizeX() {
+        List<Double[]> initialX = getX();
         List<Double> mu = getMuX();
         List<Double> sigma = getSigmaX();
+        Double[] muArray = convertDoubleListToArray(mu);
+        Double[] sigmaArray = convertDoubleListToArray(sigma);
         return initialX.stream()
             .map(vectorX -> {
-                List<Double> xMinusMu = substractVectors(vectorX, mu);
-                return divideVectors(xMinusMu, sigma);
+                Double[] xMinusMu = substractVectors(vectorX, muArray);
+                return divideVectors(xMinusMu, sigmaArray);
             })
             .collect(Collectors.toList());
     }
@@ -193,14 +191,14 @@ public class Dataset {
                     vectorX[i] = Double.parseDouble(values[i]);
                 }
                 Double Y = Double.parseDouble(values[xSize]);
-                DatasetElement element = new DatasetElement(xSize, vectorX, Y);
+                DatasetElement element = new DatasetElement(vectorX, Y);
                 dataset.addElement(element);
             }
         }
         return dataset;
     }
 
-    public int getXSize() {
+    int getXSize() {
         return xSize;
     }
 }

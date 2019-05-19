@@ -1,48 +1,46 @@
 package ru.nchernetsov.GradientDescent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 class VectorUtils {
 
     /**
      * Поэлементное вычитание двух векторов
      */
-    static List<Double> substractVectors(List<Double> vector1, List<Double> vector2) {
+    static Double[] substractVectors(Double[] vector1, Double[] vector2) {
         return doOperationWithVectors(vector1, vector2, (x, y) -> x - y);
     }
 
     /**
      * Поэлементное деление двух векторов
      */
-    static List<Double> divideVectors(List<Double> vector1, List<Double> vector2) {
+    static Double[] divideVectors(Double[] vector1, Double[] vector2) {
         return doOperationWithVectors(vector1, vector2, (x, y) -> x / y);
     }
 
     /**
      * Скалярное произведение двух векторов
      */
-    public static Double scalarProduct(List<Double> vector1, List<Double> vector2) {
-        List<Double> multiplyVectors = doOperationWithVectors(vector1, vector2, (x1, x2) -> x1 * x2);
-        return multiplyVectors.stream()
+    public static Double scalarProduct(Double[] vector1, Double[] vector2) {
+        Double[] multiplyVectors = doOperationWithVectors(vector1, vector2, (x1, x2) -> x1 * x2);
+        return Arrays.stream(multiplyVectors)
             .reduce(0.0, Double::sum);
     }
 
     /**
      * Умножить все элементы вектора на число
      */
-    public static List<Double> multiplyVectorOnNumber(List<Double> vector, double number) {
-        return vector.stream()
+    public static Double[] multiplyVectorOnNumber(Double[] vector, double number) {
+        return Arrays.stream(vector)
             .map(element -> element * number)
-            .collect(Collectors.toList());
+            .toArray(Double[]::new);
     }
 
     /**
      * Норма вектора
      */
-    public static Double vectorNorm(List<Double> vector) {
+    public static Double vectorNorm(Double[] vector) {
         double sum = 0.0;
         for (Double elem : vector) {
             sum += elem * elem;
@@ -50,20 +48,20 @@ class VectorUtils {
         return Math.sqrt(sum);
     }
 
-    private static <E> List<E> doOperationWithVectors(List<E> vector1, List<E> vector2, BiFunction<E, E, E> operation) {
-        if (vector1.size() != vector2.size()) {
+    private static Double[] doOperationWithVectors(Double[] vector1, Double[] vector2, BiFunction<Double, Double, Double> operation) {
+        if (vector1.length != vector2.length) {
             throw new IllegalArgumentException("Sizes of vectors are different: vector1 size = "
-                + vector1.size() + " vector2 size = " + vector2.size());
+                + vector1.length + " vector2 size = " + vector2.length);
         }
-        int size = vector1.size();
+        int size = vector1.length;
 
-        List<E> result = new ArrayList<>(size);
+        Double[] result = new Double[size];
 
         for (int i = 0; i < size; i++) {
-            E vector1I = vector1.get(i);
-            E vector2I = vector2.get(i);
-            E resultI = operation.apply(vector1I, vector2I);
-            result.add(resultI);
+            Double vector1I = vector1[i];
+            Double vector2I = vector2[i];
+            Double resultI = operation.apply(vector1I, vector2I);
+            result[i] = resultI;
         }
 
         return result;
