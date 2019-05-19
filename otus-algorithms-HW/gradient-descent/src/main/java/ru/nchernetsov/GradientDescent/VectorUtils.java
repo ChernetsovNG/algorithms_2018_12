@@ -39,6 +39,17 @@ class VectorUtils {
             .collect(Collectors.toList());
     }
 
+    /**
+     * Норма вектора
+     */
+    public static Double vectorNorm(List<Double> vector) {
+        double sum = 0.0;
+        for (Double elem : vector) {
+            sum += elem * elem;
+        }
+        return Math.sqrt(sum);
+    }
+
     private static <E> List<E> doOperationWithVectors(List<E> vector1, List<E> vector2, BiFunction<E, E, E> operation) {
         if (vector1.size() != vector2.size()) {
             throw new IllegalArgumentException("Sizes of vectors are different: vector1 size = "

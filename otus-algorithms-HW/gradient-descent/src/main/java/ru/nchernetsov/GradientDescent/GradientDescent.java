@@ -2,9 +2,7 @@ package ru.nchernetsov.GradientDescent;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static ru.nchernetsov.GradientDescent.VectorUtils.*;
@@ -14,23 +12,31 @@ import static ru.nchernetsov.GradientDescent.VectorUtils.*;
  */
 public class GradientDescent {
 
+    /**
+     * Значения MSE по итерациям в процессе обучения
+     */
+    private final List<Double> errorsByIterations = new ArrayList<>();
+
+    /**
+     * Значения модуля градиента по итерациям в процессе обучения
+     */
+    private final List<Double> gradientByIterations = new ArrayList<>();
+
     public static void main(String[] args) throws IOException {
         Dataset dataset = Dataset.readDatasetFromCsvFile(14, "boston_housing-31272-bf744f.csv");
         GradientDescent gradientDescent = new GradientDescent();
         List<Double> vectorW = gradientDescent.calcVectorW(dataset, 0.1, 0.001, 1000);
     }
 
-    private final Map<Integer, Double> errorsByIterationsMap = new HashMap<>();
-
     /**
      * Вычислить параметры модели
      *
      * @param dataset              набор данных
-     * @param gamma                множитель для градиента
+     * @param learningRate         множитель для градиента
      * @param errorValue           желаемое значение MSE
      * @param iterationsCountLimit ограничение максимального кол-ва итераций по подбору параметров модели
      */
-    private List<Double> calcVectorW(Dataset dataset, double gamma, double errorValue, int iterationsCountLimit) {
+    private List<Double> calcVectorW(Dataset dataset, double learningRate, double errorValue, int iterationsCountLimit) {
         int xSize = dataset.getXSize();
         List<List<Double>> vectorXList = dataset.getNormalizeX();
         List<Double> vectorY = dataset.getNormalizeY();
@@ -44,19 +50,20 @@ public class GradientDescent {
         int iterationCount = 0;
 
         while (meanSquaredError > errorValue && iterationCount < iterationsCountLimit) {
-            vectorW = calcNewVectorW(vectorXList, vectorY, vectorW, gamma);
+            vectorW = calcNewVectorW(vectorXList, vectorY, vectorW, learningRate);
             meanSquaredError = getMeanSquaredError(vectorY, calcYPredictedVector(vectorXList, vectorW));
             iterationCount++;
-            errorsByIterationsMap.put(iterationCount, meanSquaredError);
+            errorsByIterations.add(meanSquaredError);
         }
 
         return vectorW;
     }
 
-    private List<Double> calcNewVectorW(List<List<Double>> vectorXList, List<Double> vectorY, List<Double> vectorW, double gamma) {
+    private List<Double> calcNewVectorW(List<List<Double>> vectorXList, List<Double> vectorY, List<Double> vectorW, double learningRate) {
         List<Double> gradient = calcGradient(vectorXList, vectorY, vectorW);
-        List<Double> gradientMultiplyGamma = multiplyVectorOnNumber(gradient, gamma);
-        return substractVectors(vectorW, gradientMultiplyGamma);
+        gradientByIterations.add(vectorNorm(gradient));
+        List<Double> gradientMultiplyLearningRate = multiplyVectorOnNumber(gradient, learningRate);
+        return substractVectors(vectorW, gradientMultiplyLearningRate);
     }
 
     /**
