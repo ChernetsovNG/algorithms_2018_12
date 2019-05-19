@@ -11,14 +11,14 @@ public class DatasetTest {
 
     @Test
     public void readDatasetFromFileTest() throws IOException {
-        Dataset dataset = Dataset.readDatasetFromCsvFile("boston_housing-31272-bf744f.csv");
+        Dataset dataset = Dataset.readDatasetFromCsvFile(14, "boston_housing-31272-bf744f.csv");
         assertThat(dataset.size()).isEqualTo(506);
     }
 
     @Test
     public void test1() throws IOException {
-        Dataset dataset = Dataset.readDatasetFromCsvFile("boston_housing-31272-bf744f.csv");
-        // проверяем, что все нужные значения нормально вычисляются
+        Dataset dataset = Dataset.readDatasetFromCsvFile(14, "boston_housing-31272-bf744f.csv");
+        // проверяем, что все нужные значения вычисляются без ошибок
         List<List<Double>> x = dataset.getX();
         List<Double> y = dataset.getY();
         List<Double> muX = dataset.getMuX();

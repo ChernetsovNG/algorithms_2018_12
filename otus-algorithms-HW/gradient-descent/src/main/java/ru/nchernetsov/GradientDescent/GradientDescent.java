@@ -2,7 +2,6 @@ package ru.nchernetsov.GradientDescent;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Алгоритм градиентного спуска для метода наименьших квадратов
@@ -11,7 +10,7 @@ public class GradientDescent {
 
     public static void main(String[] args) throws IOException {
         GradientDescent gradientDescent = new GradientDescent();
-        Dataset dataset = Dataset.readDatasetFromCsvFile("boston_housing-31272-bf744f.csv");
+        Dataset dataset = Dataset.readDatasetFromCsvFile(14, "boston_housing-31272-bf744f.csv");
     }
 
     /**
@@ -32,7 +31,6 @@ public class GradientDescent {
             double deltaY = yTrueI - yPredictedI;
             sum += deltaY * deltaY;
         }
-
 
         return sum / n;
     }
