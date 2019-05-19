@@ -199,4 +199,8 @@ public class Dataset {
         }
         return dataset;
     }
+
+    public int getXSize() {
+        return xSize;
+    }
 }
