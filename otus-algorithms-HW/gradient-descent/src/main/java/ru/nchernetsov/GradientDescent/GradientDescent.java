@@ -27,6 +27,8 @@ public class GradientDescent {
         Dataset dataset = Dataset.readDatasetFromCsvFile(14, "boston_housing-31272-bf744f.csv");
         GradientDescent gradientDescent = new GradientDescent();
         Double[] vectorW = gradientDescent.calcVectorW(dataset, 0.1, 0.001, 1000);
+        System.out.println("last iteration error = " + gradientDescent.errorsByIterations.get(gradientDescent.errorsByIterations.size() - 1));
+        System.out.println("last iteration gradient = " + gradientDescent.gradientByIterations.get(gradientDescent.gradientByIterations.size() - 1));
     }
 
     /**
