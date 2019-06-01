@@ -2,6 +2,7 @@ package ru.nchernetsov;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class Utils {
@@ -99,5 +100,14 @@ public class Utils {
             arrays[chunks - 1] = Arrays.copyOfRange(arrayToSplit, (chunks - 1) * chunkSize, (chunks - 1) * chunkSize + rest);
         }
         return arrays;
+    }
+
+    public static Double[] convertDoubleListToArray(List<Double> list) {
+        int size = list.size();
+        Double[] array = new Double[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = list.get(i);
+        }
+        return array;
     }
 }
