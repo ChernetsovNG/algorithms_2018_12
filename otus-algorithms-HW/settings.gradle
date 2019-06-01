@@ -16,6 +16,8 @@ include 'HW16'
 include 'HW17'
 include 'HW18'
 include 'BoyerMoore'
+include 'AhoCorasick'
+
 include 'KnuthMorrisPratt'
 include 'RLE'
 include 'dynamic-programming'
