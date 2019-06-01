@@ -1,6 +1,6 @@
 package ru.nchernetsov.select;
 
-import ru.nchernetsov.common.Pair;
+import ru.nchernetsov.tuples.Pair;
 
 import java.util.Arrays;
 
@@ -70,8 +70,8 @@ public class Select {
         Pair<long[], long[]> bottomUpperParts = partition(array, medianOfMedians);
 
         // части разбиения
-        long[] bottomPart = bottomUpperParts.getKey();
-        long[] upperPart = bottomUpperParts.getValue();
+        long[] bottomPart = bottomUpperParts.getFirst();
+        long[] upperPart = bottomUpperParts.getSecond();
 
         int bottomPartLength = bottomPart.length;
         int upperPartLength = upperPart.length;

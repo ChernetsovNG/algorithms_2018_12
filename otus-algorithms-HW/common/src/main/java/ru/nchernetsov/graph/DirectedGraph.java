@@ -13,6 +13,19 @@ public class DirectedGraph extends Graph {
         super(maxVerticesCount);
     }
 
+    // конструктор для графа, заданного вектором смежности
+    public DirectedGraph(int[][] A) {
+        this(A.length);
+        int vertexCountA = A.length;
+        for (int i = 0; i < vertexCountA; i++) {
+            addVertex(i);
+            for (int j = 0; j < A[i].length; j++) {
+                int adjVertexIndex = A[i][j];
+                addEdge(i, adjVertexIndex);
+            }
+        }
+    }
+
     @Override
     public void addEdge(int from, int to) {
         // добавляем к вектору смежности первой вершины вторую вершину

@@ -1,14 +1,64 @@
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2'
+    }
+}
+
 plugins {
     id 'java'
+    id 'jacoco'
+    id "org.sonarqube" version "2.7.1"
 }
 
 allprojects {
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+
     group 'ru.nchernetsov'
     version '1.0-SNAPSHOT'
 
-    sourceCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_1_8
 
     repositories {
         mavenCentral()
+        jcenter()
+    }
+}
+
+subprojects {
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        testCompile group: 'org.assertj', name: 'assertj-core', version: '3.11.1'
+    }
+}
+
+def allTestCoverageFile = "$buildDir/jacoco/allTestCoverage.exec"
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "your.org:YourProject"
+        property "sonar.projectName", "YourProject"
+        property "sonar.jacoco.reportPaths", allTestCoverageFile
+    }
+}
+
+task jacocoMergeTest(type: JacocoMerge) {
+    destinationFile = file(allTestCoverageFile)
+    executionData = project.fileTree(dir: '.', include:'**/build/jacoco/test.exec')
+}
+
+task jacocoMerge(dependsOn: ['jacocoMergeTest']) {
+    // used to run the other merge tasks
+}
+
+subprojects {
+    sonarqube {
+        properties {
+            property "sonar.jacoco.reportPaths", allTestCoverageFile
+        }
     }
 }
