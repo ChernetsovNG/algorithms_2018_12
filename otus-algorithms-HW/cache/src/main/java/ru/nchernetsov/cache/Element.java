@@ -23,11 +23,6 @@ public class Element<K, V> {
     private final V value;
 
     /**
-     * Время создания элемента, UTC, мс
-     */
-    private final long creationTime;
-
-    /**
      * Время последнего доступа к элементу, UTC, мс
      */
     private long lastAccessTime;
@@ -35,7 +30,6 @@ public class Element<K, V> {
     private Element(K key, V value) {
         this.key = key;
         this.value = value;
-        this.creationTime = getCurrentTime();
         this.lastAccessTime = getCurrentTime();
     }
 
@@ -49,10 +43,6 @@ public class Element<K, V> {
 
     public V getValue() {
         return value;
-    }
-
-    public long getCreationTime() {
-        return creationTime;
     }
 
     public long getLastAccessTime() {

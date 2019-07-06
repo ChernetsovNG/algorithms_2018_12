@@ -7,7 +7,7 @@ import java.math.BigInteger;
  */
 public class FibCache {
 
-    private final Cache<Integer, BigInteger> cache = new SlidingTimedCache<>(1000, 10_000L);
+    private final javax.cache.Cache<Integer, BigInteger> cache = new SlidingTimedCache<>(10_000L);
 
     /**
      * Функция вычисления n-го числа Фибоначчи
