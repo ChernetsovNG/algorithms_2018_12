@@ -10,7 +10,7 @@ import static ru.nchernetsov.cache.Cache.getCurrentTime;
  * @param <K> тип ключа
  * @param <V> тип значения
  */
-public class Element<K, V> {
+public class Element<K, V> implements javax.cache.Cache.Entry<K, V> {
 
     /**
      * Ключ
@@ -43,6 +43,11 @@ public class Element<K, V> {
 
     public V getValue() {
         return value;
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> clazz) {
+        throw new NotImplementedException();
     }
 
     public long getLastAccessTime() {

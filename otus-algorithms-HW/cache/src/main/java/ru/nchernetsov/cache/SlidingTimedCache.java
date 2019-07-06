@@ -7,10 +7,7 @@ import javax.cache.integration.CompletionListener;
 import javax.cache.processor.EntryProcessor;
 import javax.cache.processor.EntryProcessorException;
 import javax.cache.processor.EntryProcessorResult;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -34,8 +31,6 @@ public class SlidingTimedCache<K, V> implements javax.cache.Cache<K, V> {
 
     public SlidingTimedCache(long lifeTimeMs) {
         this.lifeTimeMs = lifeTimeMs > 0 ? lifeTimeMs : 0;
-
-        // int availableProcessors = Runtime.getRuntime().availableProcessors();
         executorService = Executors.newScheduledThreadPool(2);
     }
 
@@ -224,8 +219,11 @@ public class SlidingTimedCache<K, V> implements javax.cache.Cache<K, V> {
 
     @Override
     public Iterator<Entry<K, V>> iterator() {
-        throw new NotImplementedException();
+        List<Entry<K, V>> entries = new ArrayList<>(elements.values());
+        return entries.iterator();
     }
+
+    // PRIVATE section
 
     void putElement(Element<K, V> element) {
         K key = element.getKey();
@@ -245,8 +243,6 @@ public class SlidingTimedCache<K, V> implements javax.cache.Cache<K, V> {
         }
         return element;
     }
-
-    // PRIVATE section
 
     // Отложенная задача по удалению элемента из кеша по ключу
     private Runnable removeElementTask(final K key) {
