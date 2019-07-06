@@ -230,7 +230,7 @@ public class SlidingTimedCache<K, V> implements javax.cache.Cache<K, V> {
         elements.put(key, element);
         if (lifeTimeMs != 0) {
             // планируем задачу на выселение элемента через lifeTimeMs
-            executorService.schedule(removeElementTask(key), lifeTimeMs, TimeUnit.MILLISECONDS);
+            planRemoveElementTask(key);
         }
     }
 
@@ -238,10 +238,14 @@ public class SlidingTimedCache<K, V> implements javax.cache.Cache<K, V> {
         Element<K, V> element = elements.get(key);
         if (element != null) {
             element.setAccessTime();
-            // планируем задачу на выселение элемента через lifeTimeMs
-            executorService.schedule(removeElementTask(key), lifeTimeMs, TimeUnit.MILLISECONDS);
+            // после обновления lastAccessTime планируем задачу на выселение элемента через lifeTimeMs
+            planRemoveElementTask(key);
         }
         return element;
+    }
+
+    private void planRemoveElementTask(final K key) {
+        executorService.schedule(removeElementTask(key), lifeTimeMs, TimeUnit.MILLISECONDS);
     }
 
     // Отложенная задача по удалению элемента из кеша по ключу
